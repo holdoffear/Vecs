@@ -8,19 +8,24 @@
     "net7.0": []
   },
   "packageFolders": {
-    "C:\\Users\\gkika\\.nuget\\packages\\": {}
+    "C:\\Users\\gkika\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\Windows\\Documents\\software_projects\\ecs\\ecs.csproj",
+      "projectUniqueName": "f:\\Windows\\Documents\\software_projects\\ecs\\src\\ecs\\ecs.csproj",
       "projectName": "ecs",
-      "projectPath": "F:\\Windows\\Documents\\software_projects\\ecs\\ecs.csproj",
+      "projectPath": "f:\\Windows\\Documents\\software_projects\\ecs\\src\\ecs\\ecs.csproj",
       "packagesPath": "C:\\Users\\gkika\\.nuget\\packages\\",
-      "outputPath": "F:\\Windows\\Documents\\software_projects\\ecs\\obj\\",
+      "outputPath": "f:\\Windows\\Documents\\software_projects\\ecs\\src\\ecs\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
         "C:\\Users\\gkika\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
