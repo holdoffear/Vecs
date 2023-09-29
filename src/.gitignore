@@ -1,0 +1,8 @@
+# main
+Vecs/obj
+Vecs/bin
+
+# tests
+Vecs.Tests/TestResults
+Vecs.Tests/obj
+Vecs.Tests/bin
