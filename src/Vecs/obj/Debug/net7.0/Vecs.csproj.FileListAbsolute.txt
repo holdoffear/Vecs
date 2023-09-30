@@ -1,0 +1,12 @@
+F:\Windows\Documents\software_projects\Vecs\src\Vecs\bin\Debug\net7.0\Vecs.deps.json
+F:\Windows\Documents\software_projects\Vecs\src\Vecs\bin\Debug\net7.0\Vecs.dll
+F:\Windows\Documents\software_projects\Vecs\src\Vecs\bin\Debug\net7.0\Vecs.pdb
+F:\Windows\Documents\software_projects\Vecs\src\Vecs\obj\Debug\net7.0\Vecs.csproj.AssemblyReference.cache
+F:\Windows\Documents\software_projects\Vecs\src\Vecs\obj\Debug\net7.0\Vecs.GeneratedMSBuildEditorConfig.editorconfig
+F:\Windows\Documents\software_projects\Vecs\src\Vecs\obj\Debug\net7.0\Vecs.AssemblyInfoInputs.cache
+F:\Windows\Documents\software_projects\Vecs\src\Vecs\obj\Debug\net7.0\Vecs.AssemblyInfo.cs
+F:\Windows\Documents\software_projects\Vecs\src\Vecs\obj\Debug\net7.0\Vecs.csproj.CoreCompileInputs.cache
+F:\Windows\Documents\software_projects\Vecs\src\Vecs\obj\Debug\net7.0\Vecs.dll
+F:\Windows\Documents\software_projects\Vecs\src\Vecs\obj\Debug\net7.0\refint\Vecs.dll
+F:\Windows\Documents\software_projects\Vecs\src\Vecs\obj\Debug\net7.0\Vecs.pdb
+F:\Windows\Documents\software_projects\Vecs\src\Vecs\obj\Debug\net7.0\ref\Vecs.dll

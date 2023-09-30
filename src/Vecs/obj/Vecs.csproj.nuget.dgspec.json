@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "f:\\Windows\\Documents\\software_projects\\Vecs\\src\\Vecs\\Vecs.csproj": {}
+    "F:\\Windows\\Documents\\software_projects\\Vecs\\src\\Vecs\\Vecs.csproj": {}
   },
   "projects": {
-    "f:\\Windows\\Documents\\software_projects\\Vecs\\src\\Vecs\\Vecs.csproj": {
+    "F:\\Windows\\Documents\\software_projects\\Vecs\\src\\Vecs\\Vecs.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "f:\\Windows\\Documents\\software_projects\\Vecs\\src\\Vecs\\Vecs.csproj",
+        "projectUniqueName": "F:\\Windows\\Documents\\software_projects\\Vecs\\src\\Vecs\\Vecs.csproj",
         "projectName": "Vecs",
-        "projectPath": "f:\\Windows\\Documents\\software_projects\\Vecs\\src\\Vecs\\Vecs.csproj",
+        "projectPath": "F:\\Windows\\Documents\\software_projects\\Vecs\\src\\Vecs\\Vecs.csproj",
         "packagesPath": "C:\\Users\\gkika\\.nuget\\packages\\",
-        "outputPath": "f:\\Windows\\Documents\\software_projects\\Vecs\\src\\Vecs\\obj\\",
+        "outputPath": "F:\\Windows\\Documents\\software_projects\\Vecs\\src\\Vecs\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

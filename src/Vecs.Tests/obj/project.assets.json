@@ -1901,6 +1901,16 @@
         "runtime": {
           "lib/netstandard1.3/System.Xml.XmlDocument.dll": {}
         }
+      },
+      "Vecs/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "compile": {
+          "bin/placeholder/Vecs.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Vecs.dll": {}
+        }
       }
     }
   },
@@ -6761,6 +6771,11 @@
         "system.xml.xmldocument.4.3.0.nupkg.sha512",
         "system.xml.xmldocument.nuspec"
       ]
+    },
+    "Vecs/1.0.0": {
+      "type": "project",
+      "path": "../Vecs/Vecs.csproj",
+      "msbuildProject": "../Vecs/Vecs.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -6768,6 +6783,7 @@
       "MSTest.TestAdapter >= 2.2.10",
       "MSTest.TestFramework >= 2.2.10",
       "Microsoft.NET.Test.Sdk >= 17.3.2",
+      "Vecs >= 1.0.0",
       "coverlet.collector >= 3.1.2"
     ]
   },
@@ -6802,7 +6818,11 @@
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "F:\\Windows\\Documents\\software_projects\\Vecs\\src\\Vecs\\Vecs.csproj": {
+              "projectPath": "F:\\Windows\\Documents\\software_projects\\Vecs\\src\\Vecs\\Vecs.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
