@@ -6,6 +6,20 @@ namespace Vecs.Tests
     public class ArchetypeIdTest
     {
         [TestMethod]
+        [DataRow(new Type[]{typeof(string), typeof(bool)}, typeof(int))]
+        [DataRow(new Type[]{}, typeof(int))]
+        [DataRow(new Type[]{typeof(string)}, typeof(int))]
+        [DataRow(new Type[]{typeof(string), typeof(bool), typeof(float)}, typeof(int))]
+        public void ArchetypeIdConstructor_ReturnsTrue(Type[] inputTypeArray, Type inputType)
+        {
+            ArchetypeId archetypeId = new ArchetypeId(inputTypeArray, inputType);
+            bool result = archetypeId.Count == inputTypeArray.Length + 1;
+            Assert.IsTrue(result);
+
+            result = archetypeId.Contains(inputType);
+            Assert.IsTrue(result);
+        }
+        [TestMethod]
         [DataRow(new Type[]{typeof(int), typeof(string), typeof(bool)}, typeof(int))]
         [DataRow(new Type[]{typeof(int), typeof(string), typeof(bool)}, typeof(bool))]
         [DataRow(new Type[]{typeof(int), typeof(string), typeof(bool)}, typeof(string))]
@@ -34,7 +48,7 @@ namespace Vecs.Tests
             ArchetypeId archetypeId = new ArchetypeId(input);
             Type[] result = archetypeId.GetTypes();
             Assert.AreEqual(input.Length, result.Length);
-            for (int i = 0; i <= input.Length; i++)
+            for (int i = 0; i < input.Length; i++)
             {
                 bool hasType = result.Contains(input[i]);
                 Assert.IsTrue(hasType);
