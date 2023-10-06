@@ -5,11 +5,15 @@ namespace Vecs
         private SortedSet<Type> types;
         public SortedSet<Type> Types {get => types;}
         public int Count {get => types.Count;}
-        public ArchetypeId(Type[] types)
+        public ArchetypeId(in Type[] types)
         {
             this.types = new SortedSet<Type>(types, new TypeComparer());
         }
-        bool Contains(Type type)
+        public bool Contains(Type type)
+        {
+            throw new NotImplementedException();
+        }
+        public Type[] GetTypes()
         {
             throw new NotImplementedException();
         }
