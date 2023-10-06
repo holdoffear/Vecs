@@ -9,13 +9,20 @@ namespace Vecs
         {
             this.types = new SortedSet<Type>(types, new TypeComparer());
         }
+        public ArchetypeId(in Type[] types, in Type type)
+        {
+            Type[] joinedArray = new Type[types.Length+1];
+            Array.Copy(types, joinedArray, types.Length);
+            joinedArray[joinedArray.Length-1] = type;
+            this.types = new SortedSet<Type>(joinedArray, new TypeComparer());
+        }
         public bool Contains(Type type)
         {
-            throw new NotImplementedException();
+            return Types.Contains(type);
         }
         public Type[] GetTypes()
         {
-            throw new NotImplementedException();
+            return Types.ToArray();
         }
     }
 
