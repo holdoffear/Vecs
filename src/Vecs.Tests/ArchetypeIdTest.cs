@@ -10,7 +10,7 @@ namespace Vecs.Tests
         [DataRow(new Type[]{}, typeof(int))]
         [DataRow(new Type[]{typeof(string)}, typeof(int))]
         [DataRow(new Type[]{typeof(string), typeof(bool), typeof(float)}, typeof(int))]
-        public void ArchetypeIdConstructor_ReturnsTrue(Type[] inputTypeArray, Type inputType)
+        public void ArchetypeIdConstructor_ConstructType_ReturnsTrue(Type[] inputTypeArray, Type inputType)
         {
             ArchetypeId archetypeId = new ArchetypeId(inputTypeArray, inputType);
             bool result = archetypeId.Count == inputTypeArray.Length + 1;
@@ -43,7 +43,7 @@ namespace Vecs.Tests
         [DataRow(new Type[]{typeof(int), typeof(string), typeof(bool)})]
         [DataRow(new Type[]{typeof(int), typeof(string)})]
         [DataRow(new Type[]{})]
-        public void GetTypes_TypeArray_ReturnsTypeArray(Type[] input)
+        public void TypesProperty_TypeArray_ReturnsSameTypeArray(Type[] input)
         {
             ArchetypeId archetypeId = new ArchetypeId(input);
             Type[] result = archetypeId.GetTypes();
