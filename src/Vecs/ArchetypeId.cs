@@ -1,6 +1,6 @@
 namespace Vecs
 {
-    public struct ArchetypeId :  IEquatable<ArchetypeId>
+    public struct ArchetypeId : IEquatable<ArchetypeId>
     {
         public SortedSet<Type> Types {get;}
         public int Count {get => Types.Count;}
