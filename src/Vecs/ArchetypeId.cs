@@ -1,20 +1,19 @@
 namespace Vecs
 {
-    public struct ArchetypeId
+    public struct ArchetypeId :  IEquatable<ArchetypeId>
     {
-        private SortedSet<Type> types;
-        public SortedSet<Type> Types {get => types;}
-        public int Count {get => types.Count;}
+        public SortedSet<Type> Types {get;}
+        public int Count {get => Types.Count;}
         public ArchetypeId(in Type[] types)
         {
-            this.types = new SortedSet<Type>(types, new TypeComparer());
+            this.Types = new SortedSet<Type>(types, new TypeComparer());
         }
         public ArchetypeId(in Type[] types, in Type type)
         {
             Type[] joinedArray = new Type[types.Length+1];
             Array.Copy(types, joinedArray, types.Length);
             joinedArray[joinedArray.Length-1] = type;
-            this.types = new SortedSet<Type>(joinedArray, new TypeComparer());
+            this.Types = new SortedSet<Type>(joinedArray, new TypeComparer());
         }
         public bool Contains(Type type)
         {
@@ -23,6 +22,22 @@ namespace Vecs
         public Type[] GetTypes()
         {
             return Types.ToArray();
+        }
+
+        public bool Equals(ArchetypeId other)
+        {
+            if (Types.Count != other.Types.Count)
+            {
+                return false;
+            }
+            for (int i = 0; i < Types.Count; i++)
+            {
+                if (Types.ElementAt(i).Equals(other.Types.ElementAt(i)) == false)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 
@@ -51,7 +66,6 @@ namespace Vecs
             }
             return true;
         }
-
         public int GetHashCode(ArchetypeId obj)
         {
             int hash = obj.Types.Count;
