@@ -2,14 +2,18 @@ namespace Vecs
 {
     public struct Entity : IEquatable<Entity>
     {
-        public ArchetypeId ArchetypeId {get;}
-        public Entity(ArchetypeId archetypeId)
+        private long id;
+        public long Id {get {return id;} set {id = value;}}
+        private ArchetypeId archetypeId;
+        public ArchetypeId ArchetypeId {get {return archetypeId;} set {archetypeId = value;} }
+        public Entity(long id, ArchetypeId archetypeId)
         {
-            this.ArchetypeId = archetypeId;
+            this.id = id;
+            this.archetypeId = archetypeId;
         }
         public bool Equals(Entity other)
         {
-            return ArchetypeId.Equals(other.ArchetypeId);
+            return Id.Equals(other.Id);
         }
     }
 }
