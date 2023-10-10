@@ -2,18 +2,22 @@ namespace Vecs
 {
     public struct ArchetypeId : IEquatable<ArchetypeId>
     {
-        public SortedSet<Type> Types {get;}
-        public int Count {get => Types.Count;}
+        private SortedSet<Type> types;
+        public SortedSet<Type> Types {get => types;}
+        public ArchetypeId()
+        {
+            types = new SortedSet<Type>(new TypeComparer());
+        }
         public ArchetypeId(in Type[] types)
         {
-            this.Types = new SortedSet<Type>(types, new TypeComparer());
+            this.types = new SortedSet<Type>(types, new TypeComparer());
         }
         public ArchetypeId(in Type[] types, in Type type)
         {
             Type[] joinedArray = new Type[types.Length+1];
             Array.Copy(types, joinedArray, types.Length);
             joinedArray[joinedArray.Length-1] = type;
-            this.Types = new SortedSet<Type>(joinedArray, new TypeComparer());
+            this.types = new SortedSet<Type>(joinedArray, new TypeComparer());
         }
         public bool Contains(Type type)
         {
