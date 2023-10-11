@@ -14,6 +14,11 @@ namespace Vecs.Tests
             int result = newSpan.Length;
 
             Assert.AreEqual(lastIndex, result);
+
+            for (int i = 0; i < newSpan.Length; i++)
+            {
+                Assert.AreEqual(array[i], newSpan[i]);
+            }
         }
         [TestMethod]
         [DataRow(new Type[]{typeof(int)}, 1)]
@@ -58,6 +63,22 @@ namespace Vecs.Tests
             }
 
             Assert.IsTrue(result);
+        }
+        [TestMethod]
+        [DataRow(new Type[]{typeof(bool), typeof(int)}, false, 7)]
+        public void GetComponent_MultipleValues_ReturnsComponent(Type[] types, dynamic arg1, dynamic arg2)
+        {
+            ArchetypeId archetypeId = new ArchetypeId(types);
+            Archetype archetype = new Archetype(archetypeId);
+            for (int i = 0; i < types.Length; i++)
+            {
+                Entity entity = new Entity(IdGenerator.Guid);
+                archetype.AddEntity(entity);
+                archetype.SetComponent(entity, arg1);
+                archetype.SetComponent(entity, arg2);
+                Assert.AreEqual(archetype.GetComponent(entity, arg1.GetType()), arg1);
+                Assert.AreEqual(archetype.GetComponent(entity, arg2.GetType()), arg2);
+            }
         }
         [TestMethod]
         [DataRow(new Type[]{typeof(int)}, 1000)]
@@ -105,6 +126,19 @@ namespace Vecs.Tests
             int result = archetype.Entities.Length;
 
             Assert.AreEqual(0, result);
+        }
+        [TestMethod]
+        [DataRow(new int[]{1, 5, 3, 8, 11}, 0, 4)]
+        [DataRow(new int[]{3, 2, 5, 8, 6, 4, 0}, 2, 3)]
+        [DataRow(new int[]{0, 3, 0, 1, 4, 7}, 1, 4)]
+        public void SwapIndices_IntArray_ReturnsTrue(int[] inputArray, int indexA, int indexB)
+        {
+            int resultA = inputArray[indexA];
+            int resultB = inputArray[indexB];
+            Archetype.SwapIndices(inputArray, indexA, indexB);
+
+            Assert.AreEqual(resultA, inputArray[indexB]);
+            Assert.AreEqual(resultB, inputArray[indexA]);
         }
     }
 }
