@@ -96,7 +96,6 @@ namespace Vecs.Tests
             {
                 archetype.AddEntity(new Entity(IdGenerator.Guid));  
             }
-            Entity entity = new Entity(IdGenerator.Guid);
             entities = archetype.Entities;
             for (int i = 0; i < entities.Length; i++)
             {

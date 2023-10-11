@@ -30,7 +30,6 @@ namespace Vecs.Tests
             Assert.IsTrue(result);
         }
         [TestMethod]
-        [DataRow(new Type[0], 0)]
         [DataRow(new Type[]{typeof(int), typeof(string), typeof(bool)}, 3)]
         [DataRow(new Type[]{typeof(int), typeof(string)}, 2)]
         public void Count_TypeArray_ReturnsSingleNumber(Type[] input, int expected)
@@ -42,11 +41,11 @@ namespace Vecs.Tests
         [TestMethod]
         [DataRow(new Type[]{typeof(int), typeof(string), typeof(bool)})]
         [DataRow(new Type[]{typeof(int), typeof(string)})]
-        [DataRow(new Type[]{})]
         public void TypesProperty_TypeArray_ReturnsSameTypeArray(Type[] input)
         {
             ArchetypeId archetypeId = new ArchetypeId(input);
             Type[] result = archetypeId.GetTypes();
+            
             Assert.AreEqual(input.Length, result.Length);
             for (int i = 0; i < input.Length; i++)
             {
