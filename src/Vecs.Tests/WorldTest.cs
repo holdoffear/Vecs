@@ -46,7 +46,7 @@ namespace Vecs
         [TestMethod]
         [DataRow(new Type[]{typeof(bool)})]
         [DataRow(new Type[]{typeof(bool), typeof(int)})]
-        public void RemoveArchetypes_MultipleTypes_ReturnsTrue(Type[] types)
+        public void RemoveArchetype_MultipleTypes_ReturnsTrue(Type[] types)
         {
             World world = new World();
             ArchetypeId archetypeId = new ArchetypeId(types);
@@ -62,6 +62,28 @@ namespace Vecs
                     bool result = archetypes[i].ArchetypeId.Contains(type);
                     Assert.IsFalse(result);
                 }
+            }
+        }
+        [TestMethod]
+        [DataRow(1000)]
+        [DataRow(0)]
+        [DataRow(1)]
+        public void RemoveEntity_MultipleEntities_ReturnsTrue(int iterations)
+        {
+            World world = new World();
+            Entity[] entities = new Entity[iterations];
+            for (int i = 0; i < entities.Length; i++)
+            {
+                entities[i] = world.CreateEntity();
+            }
+            for (int i = 0; i < entities.Length; i++)
+            {
+                world.RemoveEntity(entities[i]);
+                Archetype archetype = world.GetArchetype(entities[i].ArchetypeId);
+                bool result = archetype.Entities.Contains(entities[i]);
+                Assert.IsFalse(result);
+
+                Assert.AreEqual(entities.Length - i-1, archetype.Entities.Length);
             }
         }
     }   
