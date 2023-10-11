@@ -43,5 +43,26 @@ namespace Vecs
                 }
             }
         }
+        [TestMethod]
+        [DataRow(new Type[]{typeof(bool)})]
+        [DataRow(new Type[]{typeof(bool), typeof(int)})]
+        public void RemoveArchetypes_MultipleTypes_ReturnsTrue(Type[] types)
+        {
+            World world = new World();
+            ArchetypeId archetypeId = new ArchetypeId(types);
+            SortedSet<Type> archetypeIdTypes = archetypeId.Types;
+
+            world.AddArchetype(archetypeId);
+            world.RemoveArchetype(archetypeId);
+            foreach (Type type in archetypeIdTypes)
+            {
+                Archetype[] archetypes = world.GetArchetypes(type);
+                for (int i = 0; i < archetypes.Length; i++)
+                {
+                    bool result = archetypes[i].ArchetypeId.Contains(type);
+                    Assert.IsFalse(result);
+                }
+            }
+        }
     }   
 }
