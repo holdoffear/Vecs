@@ -6,11 +6,18 @@ namespace Vecs
         public SortedSet<Type> Types {get => types;}
         public ArchetypeId()
         {
-            types = new SortedSet<Type>(new TypeComparer());
+            this.types = new SortedSet<Type>(new Type[]{typeof(DefaultArchetype)}, new TypeComparer());
         }
         public ArchetypeId(in Type[] types)
         {
-            this.types = new SortedSet<Type>(types, new TypeComparer());
+            if (types.Length < 1)
+            {
+                this = new ArchetypeId();
+            }
+            else
+            {
+                this.types = new SortedSet<Type>(types, new TypeComparer());
+            }
         }
         public ArchetypeId(in Type[] types, in Type type)
         {
@@ -42,6 +49,14 @@ namespace Vecs
                 }
             }
             return true;
+        }
+        public static bool operator ==(ArchetypeId left, ArchetypeId right)
+        {
+            return left.Equals(right);
+        }
+        public static bool operator !=(ArchetypeId left, ArchetypeId right)
+        {
+            return !left.Equals(right);
         }
     }
 
