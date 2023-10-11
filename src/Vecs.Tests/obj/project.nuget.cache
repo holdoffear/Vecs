@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "AtxKxiDY2Ry0htRFsxOswK5xwgY848vLfqI10A9aNTqyNZD4uP06ti5fENOzOQQ0l03QxLEN27G0ZgUz5wnx6w==",
+  "dgSpecHash": "ItKFHnKhG9GlIfEDQ9iLxcLmD6R8bRzpfCdfhcUhmzZwohwbiiOyVjO0kN1Gp4cpKkYMFle43svOGF/I2LtuOA==",
   "success": true,
-  "projectFilePath": "F:\\Windows\\Documents\\software_projects\\Vecs\\src\\Vecs.Tests\\Vecs.Tests.csproj",
+  "projectFilePath": "F:\\Windows\\Documents\\software_projects\\Vecs\\src\\vecs.tests\\Vecs.Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\gkika\\.nuget\\packages\\coverlet.collector\\3.1.2\\coverlet.collector.3.1.2.nupkg.sha512",
     "C:\\Users\\gkika\\.nuget\\packages\\microsoft.codecoverage\\17.3.2\\microsoft.codecoverage.17.3.2.nupkg.sha512",
