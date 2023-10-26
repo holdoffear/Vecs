@@ -13,6 +13,11 @@ namespace Vecs
             this.id = id;
             this.archetypeId = new ArchetypeId();
         }
+        public Entity(long id, ArchetypeId archetypeId)
+        {
+            this.id = id;
+            this.archetypeId = archetypeId;
+        }
         public bool Equals(Entity other)
         {
             return Id.Equals(other.Id);
