@@ -1,4 +1,4 @@
-namespace Vecs
+namespace Vecs.Tests
 {
     [TestClass]
     public class WorldTest
@@ -33,12 +33,42 @@ namespace Vecs
             SortedSet<Type> archetypeIdTypes = archetypeId.Types;
 
             world.AddArchetype(archetypeId);
+            
             foreach (Type type in archetypeIdTypes)
             {
                 Archetype[] archetypes = world.GetArchetypes(type);
                 for (int i = 0; i < archetypes.Length; i++)
                 {
                     bool result = archetypes[i].ArchetypeId.Contains(type);
+                    Assert.IsTrue(result);
+                }
+            }
+        }
+        [TestMethod]
+        [DataRow(new Type[]{typeof(bool)})]
+        [DataRow(new Type[]{typeof(bool), typeof(int)})]
+        public void GetArchetypes_SameReference_ReturnsTrue(Type[] types)
+        {
+            World world = new World();
+            ArchetypeId archetypeId = new ArchetypeId(types);
+            SortedSet<Type> archetypeIdTypes = archetypeId.Types;
+
+            world.AddArchetype(archetypeId);
+            Entity entity = new Entity(3);
+            foreach (Type type in archetypeIdTypes)
+            {
+                Archetype[] archetypes = world.GetArchetypes(type);
+                for (int i = 0; i < archetypes.Length; i++)
+                {
+                    archetypes[i].AddEntity(entity);
+                }
+            }
+            foreach (Type type in archetypeIdTypes)
+            {
+                Archetype[] archetypes = world.GetArchetypes(type);
+                for (int i = 0; i < archetypes.Length; i++)
+                {
+                    bool result = archetypes[i].Entities.Contains(entity);
                     Assert.IsTrue(result);
                 }
             }
