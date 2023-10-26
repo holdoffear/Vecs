@@ -23,9 +23,12 @@ jobs:
 
     - name: Restore dependencies
       run: dotnet restore
+      working-directory: ./src/Vecs.tests/
 
     - name: Build
       run: dotnet build --configuration Release --no-restore
+      working-directory: ./src/Vecs.tests/
 
     - name: Run tests
       run: dotnet test --no-build --configuration Release --logger "console;verbosity=detailed"
+      working-directory: ./src/Vecs.tests/
