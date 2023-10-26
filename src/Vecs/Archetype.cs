@@ -56,7 +56,7 @@ namespace Vecs
             }
             return (T?)Components[typeof(T)].GetValue(index);
         }
-        public object? GetComponent(Entity entity, Type type)
+        public dynamic GetComponent(Entity entity, Type type)
         {
             int index = Array.IndexOf(entities, entity);
             return Components[type].GetValue(index);
@@ -97,6 +97,11 @@ namespace Vecs
         {
             int index = Array.IndexOf(entities, entity);
             Components[typeof(T)].SetValue(value, index);
+        }
+        public void SetComponent(Entity entity, Type type, dynamic value)
+        {
+            int index = Array.IndexOf(entities, entity);
+            Components[type].SetValue(value, index);
         }
         public static void SwapIndices(Array array, int indexA, int indexB)
         {
