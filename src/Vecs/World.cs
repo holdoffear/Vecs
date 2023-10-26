@@ -2,8 +2,8 @@ namespace Vecs
 {
     public class World
     {
-        private Dictionary<ArchetypeId, Archetype> Archetypes;
-        private Dictionary<Type, List<ArchetypeId>> ArchetypeIds;
+        public Dictionary<ArchetypeId, Archetype> Archetypes;
+        public Dictionary<Type, List<ArchetypeId>> ArchetypeIds;
         public World()
         {
             Archetypes = new Dictionary<ArchetypeId, Archetype>(new ArchetypeIdComparer());
@@ -38,17 +38,35 @@ namespace Vecs
             AddEntity(entity);
             return entity;
         }
-        public Archetype GetArchetype(ArchetypeId archetypeId)
+        public Archetype? GetArchetype(ArchetypeId archetypeId)
         {
-            return Archetypes[archetypeId];
+            if (Archetypes.ContainsKey(archetypeId) == true)
+            {
+                return Archetypes[archetypeId];
+            }
+            return null;
         }
         public Archetype[] GetArchetypes(Type type)
         {
-            List<ArchetypeId> archetypeIds = ArchetypeIds[type];
-            Archetype[] archetypes = new Archetype[archetypeIds.Count];
-            for (int i = 0; i < archetypeIds.Count; i++)
+            List<Archetype> archetypes = new List<Archetype>();
+            if (ArchetypeIds.ContainsKey(type) == true)
             {
-                archetypes[i] = Archetypes[archetypeIds[i]];
+                List<ArchetypeId> archetypeIds = ArchetypeIds[type];
+                for (int i = 0; i < archetypeIds.Count; i++)
+                {
+                    archetypes.Add(Archetypes[archetypeIds[i]]);
+                }
+            }
+            return archetypes.ToArray();
+        }
+        public Archetype[] GetArchetypes()
+        {
+            Archetype[] archetypes = new Archetype[Archetypes.Count];
+            int index = 0;
+            foreach (var key in Archetypes.Keys)
+            {
+                archetypes[index] = Archetypes[key];
+                index += 1;
             }
             return archetypes;
         }
