@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Vecs
 {
     public struct Query
@@ -25,17 +29,19 @@ namespace Vecs
         public delegate void Operation<T1>(ref T1 componentA);
         public delegate void Operation<T1, T2>(ref T1 componentA, ref T2 componentB);
         public delegate void Operation<T1, T2, T3>(ref T1 componentA, ref T2 componentB, ref T3 componentC);
-        public Entity AddComponent<T>(ref Entity entity, T value)
+        public Entity AddComponent<T>(Entity entity, T value)
         {
             ArchetypeId oldArchetypeId = entity.ArchetypeId;
             Type[] oldArchetypeIdTypes = oldArchetypeId.Types.ToArray();
             ArchetypeId newArchetypeId = new ArchetypeId(oldArchetypeIdTypes, typeof(T));
             Entity newEntity = new Entity(entity.Id, newArchetypeId);
+            Archetype oldArchetype;
+            Archetype newArchetype;
 
             World.AddEntity(newEntity);
 
-            Archetype oldArchetype = World.GetArchetype(oldArchetypeId);
-            Archetype newArchetype = World.GetArchetype(newArchetypeId);
+            oldArchetype = World.GetArchetype(oldArchetypeId);
+            newArchetype = World.GetArchetype(newArchetypeId);
 
             for (int i = 0; i < oldArchetypeIdTypes.Length; i++)
             {
@@ -45,6 +51,32 @@ namespace Vecs
 
             oldArchetype.RemoveEntity(entity);
             return newEntity;
+        }
+        public Entity RemoveComponent<T>(Entity entity)
+        {
+            ArchetypeId oldArchetypeId = entity.ArchetypeId;
+            Type[] oldArchetypeIdTypes = oldArchetypeId.Types.ToArray();
+            ArchetypeId newArchetypeId = new ArchetypeId(oldArchetypeIdTypes, typeof(T));
+            Entity newEntity = new Entity(entity.Id, newArchetypeId);
+            Archetype oldArchetype;
+            Archetype newArchetype;
+
+            World.AddEntity(newEntity);
+
+            oldArchetype = World.GetArchetype(oldArchetypeId);
+            newArchetype = World.GetArchetype(newArchetypeId);
+
+            for (int i = 0; i < oldArchetypeIdTypes.Length; i++)
+            {
+                newArchetype.SetComponent(entity,  oldArchetypeIdTypes[i], oldArchetype.GetComponent(entity, oldArchetypeIdTypes[i]));
+            }
+
+            oldArchetype.RemoveEntity(entity);
+            return newEntity;
+        }
+        public void RemoveEntity(Entity entity)
+        {
+            World.RemoveEntity(entity);
         }
         public void Foreach<T1>(in Operation<T1> operation)
         {
