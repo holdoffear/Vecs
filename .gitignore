@@ -1,8 +1,8 @@
 # main
-# Vecs/obj
+src/Vecs/obj
 src/Vecs/bin
 
 # tests
-# Vecs.Tests/TestResults
-# Vecs.Tests/obj
+src/Vecs.Tests/TestResults
+src/Vecs.Tests/obj
 src/Vecs.Tests/bin
