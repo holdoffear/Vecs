@@ -7,16 +7,16 @@ namespace Vecs
     public struct Query
     {
         public World World;
-        public SortedSet<Type> WithComponents;
-        public SortedSet<Type> WithoutComponents;
+        public HashSet<Type> WithComponents;
+        public HashSet<Type> WithoutComponents;
         //Push to use ArchetypeId instead
-        public SortedSet<ArchetypeId> ArchetypeIds;
+        public HashSet<ArchetypeId> ArchetypeIds;
         public Query(World world)
         {
             this.World = world;
-            this.WithComponents = new SortedSet<Type>();
-            this.WithoutComponents = new SortedSet<Type>();
-            this.ArchetypeIds = new SortedSet<ArchetypeId>();
+            this.WithComponents = new HashSet<Type>();
+            this.WithoutComponents = new HashSet<Type>();
+            this.ArchetypeIds = new HashSet<ArchetypeId>();
         }
         public Query(Query query)
         {
@@ -144,7 +144,7 @@ namespace Vecs
         }
         public void Refresh()
         {
-            ArchetypeIds = new SortedSet<ArchetypeId>();
+            ArchetypeIds = new HashSet<ArchetypeId>();
             for (int i = 0; i < WithComponents.Count; i++)
             {
                 if (World.ArchetypeIds.TryGetValue(WithComponents.ElementAt(i), out List<ArchetypeId> archetypeIds) == true)
