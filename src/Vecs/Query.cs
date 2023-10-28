@@ -4,26 +4,20 @@ using System.Linq;
 
 namespace Vecs
 {
-    public struct Query
+    public class Query
     {
-        public World World;
-        public HashSet<Type> WithComponents;
-        public HashSet<Type> WithoutComponents;
-        //Push to use ArchetypeId instead
-        public HashSet<ArchetypeId> ArchetypeIds;
+        private World World;
+        private HashSet<Type> withComponents;
+        private HashSet<Type> withoutComponents;
+        public HashSet<Type> WithComponents {get {return withComponents;}}
+        public HashSet<Type> WithoutComponents {get {return withoutComponents;}}
+        private HashSet<ArchetypeId> ArchetypeIds;
         public Query(World world)
         {
             this.World = world;
-            this.WithComponents = new HashSet<Type>();
-            this.WithoutComponents = new HashSet<Type>();
+            this.withComponents = new HashSet<Type>();
+            this.withoutComponents = new HashSet<Type>();
             this.ArchetypeIds = new HashSet<ArchetypeId>();
-        }
-        public Query(Query query)
-        {
-            this.World = query.World;
-            this.WithComponents = query.WithComponents;
-            this.WithoutComponents = query.WithoutComponents;
-            this.ArchetypeIds = query.ArchetypeIds;
         }
         // Doesn't handle non existent archetypes
         public delegate void Operation<T1>(ref T1 componentA);
@@ -78,6 +72,82 @@ namespace Vecs
         {
             World.RemoveEntity(entity);
         }
+        public void Clear()
+        {
+            withComponents = new HashSet<Type>();
+            withoutComponents = new HashSet<Type>();
+        }
+        private void Refresh()
+        {
+            ArchetypeIds = new HashSet<ArchetypeId>();
+            if (WithComponents.Count < 1)
+            {
+                return;
+            }
+
+            List<ArchetypeId> archetypeIds = new List<ArchetypeId>();
+            if (World.ArchetypeIds.TryGetValue(WithComponents.ElementAt(0), out archetypeIds) == true)
+            {
+                ArchetypeIds.UnionWith(archetypeIds);
+            }
+
+            for (int i = 1; i < WithComponents.Count; i++)
+            {
+                if (World.ArchetypeIds.TryGetValue(WithComponents.ElementAt(i), out archetypeIds) == true)
+                {
+                    for (int j = ArchetypeIds.Count-1; j > -1; j--)
+                    {
+                        if (archetypeIds.Contains(ArchetypeIds.ElementAt(j)) == false)
+                        {
+                            ArchetypeIds.Remove(ArchetypeIds.ElementAt(j));
+                        }
+                    }
+                }
+                else
+                {
+                    ArchetypeIds = new HashSet<ArchetypeId>();
+                    return;
+                }
+            }
+
+            for (int i = 0; i < WithoutComponents.Count; i++)
+            {
+                if (World.ArchetypeIds.TryGetValue(WithoutComponents.ElementAt(i), out archetypeIds) == true)
+                {
+                    for (int j = ArchetypeIds.Count-1; j > -1; j--)
+                    {
+                        if (archetypeIds.Contains(ArchetypeIds.ElementAt(j)) == true)
+                        {
+                            ArchetypeIds.Remove(ArchetypeIds.ElementAt(j));
+                        }
+                    }
+                }
+            }
+        }
+        public Query With(Type[] components)
+        {
+            WithComponents.UnionWith(components);
+            Refresh();
+            return this;
+        }
+        public Query Without(Type[] components)
+        {
+            WithoutComponents.UnionWith(components);
+            Refresh();
+            return this;
+        }
+        private Archetype[] GetArchetypes()
+        {
+            List<Archetype> archetypes = new List<Archetype>();
+            for (int i = 0; i < ArchetypeIds.Count; i++)
+            {
+                if (World.Archetypes.TryGetValue(ArchetypeIds.ElementAt(i), out Archetype archetype) == true)
+                {
+                    archetypes.Add(archetype);
+                }
+            }
+            return archetypes.ToArray();
+        }
         public void Foreach<T1>(in Operation<T1> operation)
         {
             Archetype[] archetypes = GetArchetypes();
@@ -119,83 +189,6 @@ namespace Vecs
                     operation(ref componentA[j], ref componentB[j], ref componentC[j]);
                 }
             }
-        }
-        public static bool AND(Archetype archetype, Type[] types)
-        {
-            for (int i = 0; i < types.Length; i++)
-            {
-                if (archetype.ArchetypeId.Contains(types[i]) == false)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-        public static bool OR(Archetype archetype, Type[] types)
-        {
-            for (int i = 0; i < types.Length; i++)
-            {
-                if (archetype.ArchetypeId.Contains(types[i]) == true)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        public void Refresh()
-        {
-            ArchetypeIds = new HashSet<ArchetypeId>();
-            for (int i = 0; i < WithComponents.Count; i++)
-            {
-                if (World.ArchetypeIds.TryGetValue(WithComponents.ElementAt(i), out List<ArchetypeId> archetypeIds) == true)
-                {
-                    ArchetypeIds.UnionWith(archetypeIds);
-                }
-            }
-
-            // for (int i = 0; i < Archetypes.Count; i++)
-            // {
-            //     Archetype archetype = Archetypes.ElementAt(i);
-            //     if (AND(archetype, withComponents) == false)
-            //     {
-            //         Archetypes.Remove(archetype);
-            //     }
-            // }
-
-            // for (int i = 0; i < Archetypes.Count; i++)
-            // {
-            //     Archetype archetype = Archetypes.ElementAt(i);
-            //     if (OR(archetype, withoutComponents) == true)
-            //     {
-            //         Archetypes.Remove(archetype);
-            //     }
-            // }
-        }
-        public Query With(Type[] components)
-        {
-            WithComponents.UnionWith(components);
-            Refresh();
-            return this;
-        }
-        public Query Without(Type[] components)
-        {
-            WithoutComponents.UnionWith(components);
-            Refresh();
-            return this;
-        }
-        private Archetype[] GetArchetypes()
-        {
-            List<Archetype> archetypes = new List<Archetype>();
-            for (int i = 0; i < ArchetypeIds.Count; i++)
-            {
-                ArchetypeId archetypeId = ArchetypeIds.ElementAt(i);
-                Archetype? archetype = World.GetArchetype(archetypeId);
-                if(archetype != null)
-                {
-                    archetypes.Add(archetype);
-                }
-            }
-            return archetypes.ToArray();
         }
     }
 }
