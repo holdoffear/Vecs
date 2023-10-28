@@ -6,12 +6,14 @@ namespace Vecs
 {
     public class World
     {
-        public Dictionary<ArchetypeId, Archetype> Archetypes;
-        public Dictionary<Type, List<ArchetypeId>> ArchetypeIds;
+        public Dictionary<ArchetypeId, Archetype> archetypes{get;}
+        public Dictionary<Type, List<ArchetypeId>> archetypeIds {get;}
+        public Dictionary<ArchetypeId, Archetype> Archetypes{get {return archetypes;}}
+        public Dictionary<Type, List<ArchetypeId>> ArchetypeIds {get {return archetypeIds;}}
         public World()
         {
-            Archetypes = new Dictionary<ArchetypeId, Archetype>(new ArchetypeIdComparer());
-            ArchetypeIds = new Dictionary<Type, List<ArchetypeId>>();
+            archetypes = new Dictionary<ArchetypeId, Archetype>(new ArchetypeIdComparer());
+            archetypeIds = new Dictionary<Type, List<ArchetypeId>>();
         }
         public void AddArchetype(ArchetypeId archetypeId)
         {
@@ -19,7 +21,7 @@ namespace Vecs
             Archetypes.Add(archetypeId, archetype);
             foreach (Type type in archetypeId.Types)
             {
-                if(ArchetypeIds.TryGetValue(type, out List<ArchetypeId>? list) == false)
+                if(ArchetypeIds.TryGetValue(type, out List<ArchetypeId> list) == false)
                 {
                     ArchetypeIds.Add(type, new List<ArchetypeId>());
                 }
@@ -28,7 +30,7 @@ namespace Vecs
         }
         public void AddEntity(Entity entity)
         {
-            Archetype? archetype;
+            Archetype archetype;
             if(Archetypes.TryGetValue(entity.ArchetypeId, out archetype) == false)
             {
                 AddArchetype(entity.ArchetypeId);
@@ -42,7 +44,7 @@ namespace Vecs
             AddEntity(entity);
             return entity;
         }
-        public Archetype? GetArchetype(ArchetypeId archetypeId)
+        public Archetype GetArchetype(ArchetypeId archetypeId)
         {
             if (Archetypes.ContainsKey(archetypeId) == true)
             {
