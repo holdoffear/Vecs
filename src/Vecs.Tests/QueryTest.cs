@@ -7,16 +7,27 @@ namespace Vecs.Tests
         {
             get
             {
+                World worldA = new World();
+                World worldB = new World();
+                World worldC = new World();
+                Entity entityA = new Entity(3, new ArchetypeId(new Type[]{typeof(float), typeof(bool), typeof(double)}));
+                Entity entityB = new Entity(4, new ArchetypeId(new Type[]{typeof(string)}));
+                Entity entityC = new Entity(7, new ArchetypeId(new Type[]{typeof(int)}));
+
+                worldA.AddEntity(entityA);
+                worldA.AddEntity(entityB);
+                worldB.AddEntity(entityA);
+                worldB.AddEntity(entityB);
+                worldB.AddEntity(entityC);
                 return new[]
                 {
-                    new object[]
-                    {
-
-                    }
+                    new object[] {worldA},
+                    new object[] {worldB},
+                    new object[] {worldC},
                 };
             }
         }
-        public World CreateWorld()
+        public static World CreateWorld(object[] types)
         {
             World world = new World();
             for (int i = 0; i < 1000; i++)
@@ -26,54 +37,65 @@ namespace Vecs.Tests
             return world;
         }
         [TestMethod]
-        [DataRow()]
-        public void With()
+        [DynamicData(nameof(WorldData))]
+        public void With_TwoTypes_ReturnsTrue(World world)
         {
-            World world = new World();
             Query query = new Query(world);
-            query.With(new Type[]{typeof(int)});
+            query.With(new Type[]{typeof(int), typeof(float)});
 
             bool result = query.WithComponents.Contains(typeof(int));
             Assert.IsTrue(result);
         }
         [TestMethod]
-        [DataRow()]
-        public void Foreach()
+        [DynamicData(nameof(WorldData))]
+        public void Foreach_SingleComponent_ReturnsTrue(World world)
         {
-            World world = new World();
             Entity entity = new Entity(3);
-            entity.ArchetypeId = new ArchetypeId(new Type[]{typeof(Mana)});
+            entity.ArchetypeId = new ArchetypeId(new Type[]{typeof(Mana), typeof(Health)});
             world.AddEntity(entity);
             Archetype archetype = world.GetArchetype(entity.ArchetypeId);
 
             Query query = new Query(world);
-            query.With(new Type[]{typeof(Mana)});
-            query.Foreach((ref Mana mana) =>
+            query
+            .With(new Type[]{typeof(Mana), typeof(Health)})
+            .Without(new Type[]{typeof(Health)})
+            .Foreach((ref Mana mana, ref Health health) =>
             {
                 mana.Amount = 1;
-                Assert.AreEqual(mana.Amount, archetype.GetComponent<Mana>(entity).Amount);
+                Assert.AreNotEqual(mana.Amount, archetype.GetComponent<Mana>(entity).Amount);
             });
         }
         [TestMethod]
-        [DataRow()]
-        public void AddComponent()
+        [DynamicData(nameof(WorldData))]
+        public void AddComponent_SingleComponent_ReturnsTrue(World world)
         {
-            World world = new World();
             Query query = new Query(world);
             Entity entity = world.CreateEntity();
-            int num = 4;
-            entity = query.AddComponent(ref entity, num);
+            Mana mana = new Mana(3);
+            Health health = new Health(10);
+            entity = query.AddComponent(entity, mana);
+            entity = query.AddComponent(entity, health);
 
             Archetype archetype = world.GetArchetype(entity.ArchetypeId);
-            int result = archetype.GetComponent<int>(entity);
-            Assert.AreEqual(num, result);
+            Mana result = archetype.GetComponent<Mana>(entity);
+            Assert.AreEqual(mana, result);
+
+            Assert.AreEqual(archetype.GetComponent<Health>(entity), health);
         }
     }
 
     struct Mana
     {
         public int Amount;
-        Mana(int amount)
+        public Mana(int amount)
+        {
+            this.Amount = amount;
+        }
+    }
+    struct Health
+    {
+        public int Amount;
+        public Health(int amount)
         {
             this.Amount = amount;
         }
