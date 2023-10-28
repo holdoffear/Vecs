@@ -7,7 +7,7 @@ namespace Vecs
     public struct ArchetypeId : IEquatable<ArchetypeId>
     {
         private SortedSet<Type> types;
-        public SortedSet<Type> Types {get => types;}
+        public SortedSet<Type> Types {get {return types;}}
         public ArchetypeId()
         {
             this.types = new SortedSet<Type>(new Type[]{typeof(DefaultArchetype)}, new TypeComparer());
