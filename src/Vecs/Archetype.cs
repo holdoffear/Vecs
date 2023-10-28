@@ -11,17 +11,18 @@ namespace Vecs
         public ArchetypeId ArchetypeId {get{return archetypeId;}}
         private int nextIndex;
         public int NextIndex {get => nextIndex;}
-        private Dictionary<Type, Array> Components;
+        private Dictionary<Type, Array> components;
+        private Dictionary<Type, Array> Components {get {return components;}}
         public Archetype(ArchetypeId archetypeId)
         {
             int initialSize = 1000;
             nextIndex = -1;
             this.archetypeId = archetypeId;
             this.entities = new Entity[initialSize];
-            this.Components = new Dictionary<Type, Array>();
+            this.components = new Dictionary<Type, Array>();
             foreach (Type key in archetypeId.Types)
             {
-                Components[key] = Array.CreateInstance(key, initialSize);
+                components[key] = Array.CreateInstance(key, initialSize);
             }
         }
         public void AddEntity(Entity entity)
@@ -50,14 +51,14 @@ namespace Vecs
             }
             return new Span<T>(new T[]{});
         }
-        public T? GetComponent<T>(Entity entity)
+        public T GetComponent<T>(Entity entity)
         {
             int index = Array.IndexOf(entities, entity);
             if (index == -1)
             {
                 throw new NotImplementedException();
             }
-            return (T?)Components[typeof(T)].GetValue(index);
+            return (T)Components[typeof(T)].GetValue(index);
         }
         public dynamic GetComponent(Entity entity, Type type)
         {
@@ -76,8 +77,8 @@ namespace Vecs
             foreach (Type key in Components.Keys)
             {
                 Array newArray = Array.CreateInstance(key, newSize);
-                Array.Copy(Components[key], newArray, Components[key].Length);  
-                Components[key] = newArray;
+                Array.Copy(components[key], newArray, components[key].Length);  
+                components[key] = newArray;
             }
         }
         public void RemoveEntity(Entity entity)
@@ -108,7 +109,7 @@ namespace Vecs
         }
         public static void SwapIndices(Array array, int indexA, int indexB)
         {
-            dynamic? temp = array.GetValue(indexA);
+            dynamic temp = array.GetValue(indexA);
             array.SetValue(array.GetValue(indexB), indexA);
             array.SetValue(temp, indexB);
         }
