@@ -1,3 +1,23 @@
-[gd_scene format=3 uid="uid://bwore0hxfnchi"]
+[gd_scene load_steps=6 format=3 uid="uid://bwore0hxfnchi"]
+
+[ext_resource type="Script" path="res://Main.cs" id="1_f72gy"]
+[ext_resource type="Script" path="res://Camera.gd" id="2_nai7s"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_eacrj"]
+
+[sub_resource type="Sky" id="Sky_pp45w"]
+sky_material = SubResource("ProceduralSkyMaterial_eacrj")
+
+[sub_resource type="Environment" id="Environment_0htw7"]
+background_mode = 2
+sky = SubResource("Sky_pp45w")
 
 [node name="Main" type="Node3D"]
+script = ExtResource("1_f72gy")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.64406)
+script = ExtResource("2_nai7s")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_0htw7")
