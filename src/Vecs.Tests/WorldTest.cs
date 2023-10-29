@@ -61,14 +61,7 @@ namespace Vecs.Tests
                 for (int i = 0; i < archetypes.Length; i++)
                 {
                     archetypes[i].AddEntity(entity);
-                }
-            }
-            foreach (Type type in archetypeIdTypes)
-            {
-                Archetype[] archetypes = world.GetArchetypes(type);
-                for (int i = 0; i < archetypes.Length; i++)
-                {
-                    bool result = archetypes[i].Entities.Contains(entity);
+                    bool result = world.GetArchetypes(type)[i].Entities.Contains(entity);
                     Assert.IsTrue(result);
                 }
             }
