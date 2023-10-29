@@ -4,10 +4,10 @@ using System.Linq;
 
 namespace Vecs
 {
-    public class World
+    public struct World
     {
-        public Dictionary<ArchetypeId, Archetype> archetypes{get;}
-        public Dictionary<Type, List<ArchetypeId>> archetypeIds {get;}
+        private Dictionary<ArchetypeId, Archetype> archetypes;
+        private Dictionary<Type, List<ArchetypeId>> archetypeIds;
         public Dictionary<ArchetypeId, Archetype> Archetypes{get {return archetypes;}}
         public Dictionary<Type, List<ArchetypeId>> ArchetypeIds {get {return archetypeIds;}}
         public World()
@@ -46,24 +46,17 @@ namespace Vecs
         }
         public Archetype GetArchetype(ArchetypeId archetypeId)
         {
-            if (Archetypes.ContainsKey(archetypeId) == true)
-            {
-                return Archetypes[archetypeId];
-            }
-            return null;
+            return Archetypes[archetypeId];
         }
         public Archetype[] GetArchetypes(Type type)
         {
-            List<Archetype> archetypes = new List<Archetype>();
-            if (ArchetypeIds.ContainsKey(type) == true)
+            List<ArchetypeId> archetypeIds = ArchetypeIds[type];
+            Archetype[] archetypes = new Archetype[archetypeIds.Count];
+            for (int i = 0; i < archetypes.Length; i++)
             {
-                List<ArchetypeId> archetypeIds = ArchetypeIds[type];
-                for (int i = 0; i < archetypeIds.Count; i++)
-                {
-                    archetypes.Add(Archetypes[archetypeIds[i]]);
-                }
+                archetypes[i] = Archetypes[archetypeIds[i]];
             }
-            return archetypes.ToArray();
+            return archetypes;
         }
         public Archetype[] GetArchetypes()
         {
