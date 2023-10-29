@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace Vecs
 {
-    public class Archetype
+    public struct Archetype
     {
         private Entity[] entities;
-        public Span<Entity> Entities {get{return CreateSpan(entities, 0, NextIndex);}}
+        public Span<Entity> Entities {get {return CreateSpan(entities, 0, NextIndex);}}
         private ArchetypeId archetypeId;
-        public ArchetypeId ArchetypeId {get{return archetypeId;}}
+        public ArchetypeId ArchetypeId {get {return archetypeId;}}
         private int nextIndex;
-        public int NextIndex {get => nextIndex;}
+        public int NextIndex {get {return nextIndex;}}
         private Dictionary<Type, Array> components;
         private Dictionary<Type, Array> Components {get {return components;}}
         public Archetype(ArchetypeId archetypeId)
