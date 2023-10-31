@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Vecs
 {
-    public struct Archetype
+    public class Archetype
     {
         private Entity[] entities;
         public Span<Entity> Entities {get {return CreateSpan(entities, 0, NextIndex);}}
