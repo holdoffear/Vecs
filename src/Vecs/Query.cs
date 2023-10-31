@@ -23,7 +23,7 @@ namespace Vecs
         public delegate void Operation<T1>(ref T1 componentA);
         public delegate void Operation<T1, T2>(ref T1 componentA, ref T2 componentB);
         public delegate void Operation<T1, T2, T3>(ref T1 componentA, ref T2 componentB, ref T3 componentC);
-        public Entity AddComponent<T>(Entity entity, T value)
+        public void AddComponent<T>(ref Entity entity, T value)
         {
             ArchetypeId oldArchetypeId = entity.ArchetypeId;
             Type[] oldArchetypeIdTypes = oldArchetypeId.Types.ToArray();
@@ -44,9 +44,9 @@ namespace Vecs
             newArchetype.SetComponent(entity, value);
 
             oldArchetype.RemoveEntity(entity);
-            return newEntity;
+            entity = newEntity;
         }
-        public Entity RemoveComponent<T>(Entity entity)
+        public void RemoveComponent<T>(ref Entity entity)
         {
             ArchetypeId oldArchetypeId = entity.ArchetypeId;
             Type[] oldArchetypeIdTypes = oldArchetypeId.Types.ToArray();
@@ -66,7 +66,7 @@ namespace Vecs
             }
 
             oldArchetype.RemoveEntity(entity);
-            return newEntity;
+            entity = newEntity;
         }
         public void RemoveEntity(Entity entity)
         {
