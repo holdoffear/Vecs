@@ -114,9 +114,4 @@ namespace Vecs
             array.SetValue(temp, indexB);
         }
     }
-
-    public struct DefaultArchetype
-    {
-        
-    }
 }

@@ -10,7 +10,7 @@ namespace Vecs
         public SortedSet<Type> Types {get {return types;}}
         public ArchetypeId()
         {
-            this.types = new SortedSet<Type>(new Type[]{typeof(DefaultArchetype)}, new TypeComparer());
+            this.types = new SortedSet<Type>(new Type[]{}, new TypeComparer());
         }
         public ArchetypeId(in Type[] types)
         {
