@@ -6,5 +6,5 @@ src/Vecs/bin
 
 # tests
 src/Vecs.Tests/TestResults
-src/Vecs.Tests/obj
+src/Vecs.Tests/obj/
 src/Vecs.Tests/bin
