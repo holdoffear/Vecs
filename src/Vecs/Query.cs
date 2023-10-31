@@ -148,6 +148,19 @@ namespace Vecs
             }
             return archetypes.ToArray();
         }
+        public void Foreach(in Operation<Entity> operation)
+        {
+            Archetype[] archetypes = GetArchetypes();
+            for (int i = 0; i < archetypes.Length; i++)
+            {
+                Archetype archetype = archetypes[i];
+                Span<Entity> entities = archetype.Entities;
+                for (int j = 0; j < archetype.Entities.Length; j++)
+                {
+                    operation(ref entities[j]);
+                }
+            }
+        }
         public void Foreach<T1>(in Operation<T1> operation)
         {
             Archetype[] archetypes = GetArchetypes();
