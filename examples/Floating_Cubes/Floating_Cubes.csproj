@@ -3,4 +3,9 @@
     <TargetFramework>net6.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <!-- <Reference Include="ext/Vecs/Vecs.dll" /> -->
+    <Reference Include="../../src/Vecs/bin/release/net6.0/win-x64/Vecs.dll" />
+  </ItemGroup>
 </Project>

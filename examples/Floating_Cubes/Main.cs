@@ -11,7 +11,7 @@ public partial class Main : Node3D
 	Rid meshInstance3D;
 	public override void _Ready()
 	{
-		meshInstance3D = new BoxMesh().GetRid();
+		meshInstance3D = new SphereMesh().GetRid();
 		query = new Query(world);
 		for (int i = 0; i < instances; i++)
 		{
@@ -19,9 +19,9 @@ public partial class Main : Node3D
 			InstanceRid instance = new InstanceRid(RenderingServer.InstanceCreate());
 
 			Entity entity = world.CreateEntity();
-			entity = query.AddComponent(entity, meshInstance3D);
-			entity = query.AddComponent(entity, transform3D);
-			entity = query.AddComponent(entity, instance);
+			query.AddComponent(ref entity, meshInstance3D);
+			query.AddComponent(ref entity, transform3D);
+			query.AddComponent(ref entity, instance);
 
 			RenderingServer.InstanceSetScenario(instance.Rid, GetWorld3D().Scenario);
             RenderingServer.InstanceSetBase(instance.Rid, meshInstance3D);
@@ -29,17 +29,18 @@ public partial class Main : Node3D
 		}
 		query.With(new Type[]{typeof(InstanceRid), typeof(Transform3D)});
 	}
-	public override void _Process(double delta)
+	public override void _PhysicsProcess(double delta)
 	{
-		Stopwatch stopwatch = new Stopwatch();
-		stopwatch.Start();
+		// Stopwatch stopwatch = new Stopwatch();
+		// stopwatch.Start();
 		query.Foreach((ref InstanceRid instanceRid, ref Transform3D transform3D) => 
 		{
 			transform3D = transform3D.Translated(GD.RandRange(-1, 1) * new Godot.Vector3(GD.Randf(), GD.Randf(), GD.Randf()));
 			RenderingServer.InstanceSetTransform(instanceRid.Rid, transform3D);
 		});
-		stopwatch.Stop();
-		GD.Print(stopwatch.ElapsedMilliseconds);
+		// stopwatch.Stop();
+		// GD.Print(stopwatch.ElapsedMilliseconds);
+		// stopwatch.Reset();
 	}
 }
 
