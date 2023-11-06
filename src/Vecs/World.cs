@@ -46,6 +46,16 @@ namespace Vecs
             }
             archetype.AddEntity(entity);
         }
+        public void AddEntity(Entity entity, Dictionary<Type, dynamic> data)
+        {
+            Archetype archetype;
+            if(Archetypes.TryGetValue(entity.ArchetypeId, out archetype) == false)
+            {
+                AddArchetype(entity.ArchetypeId);
+                archetype = Archetypes[entity.ArchetypeId];
+            }
+            archetype.AddEntity(entity, data);
+        }
         public Entity CreateEntity()
         {
             Entity entity = new Entity(IdGenerator.Guid);
