@@ -19,6 +19,13 @@ namespace Vecs
         {
             Archetype archetype = new Archetype(archetypeId);
             Archetypes.Add(archetypeId, archetype);
+            // if (archetypeIds.Count < 1)
+            // {
+            //     ArchetypeIds.Add(null, new List<ArchetypeId>());
+            //     ArchetypeIds[null].Add(archetypeId);
+            //     return;
+            // }
+
             foreach (Type type in archetypeId.Types)
             {
                 if(ArchetypeIds.TryGetValue(type, out List<ArchetypeId> list) == false)
@@ -27,6 +34,7 @@ namespace Vecs
                 }
                 ArchetypeIds[type].Add(archetypeId);
             }
+
         }
         public void AddEntity(Entity entity)
         {
@@ -37,6 +45,16 @@ namespace Vecs
                 archetype = Archetypes[entity.ArchetypeId];
             }
             archetype.AddEntity(entity);
+        }
+        public void AddEntity(Entity entity, Dictionary<Type, dynamic> data)
+        {
+            Archetype archetype;
+            if(Archetypes.TryGetValue(entity.ArchetypeId, out archetype) == false)
+            {
+                AddArchetype(entity.ArchetypeId);
+                archetype = Archetypes[entity.ArchetypeId];
+            }
+            archetype.AddEntity(entity, data);
         }
         public Entity CreateEntity()
         {

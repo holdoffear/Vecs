@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Vecs
 {
-    public class Query
+    public struct Query
     {
         private World World;
         private HashSet<Type> withComponents;
@@ -23,50 +23,70 @@ namespace Vecs
         public delegate void Operation<T1>(ref T1 componentA);
         public delegate void Operation<T1, T2>(ref T1 componentA, ref T2 componentB);
         public delegate void Operation<T1, T2, T3>(ref T1 componentA, ref T2 componentB, ref T3 componentC);
-        public Entity AddComponent<T>(Entity entity, T value)
+        // public void AddComponent<T>(ref Entity entity, T value)
+        // {
+        //     List<Type> newTypes = new List<Type>(entity.ArchetypeId.Types);
+        //     ArchetypeId newArchetypeId;
+        //     Entity newEntity;
+        //     Archetype oldArchetype;
+        //     Archetype newArchetype;
+
+        //     newTypes.Add(typeof(T));
+        //     newArchetypeId = new ArchetypeId(newTypes.ToArray());
+        //     newEntity = new Entity(entity.Id, newArchetypeId);
+        //     World.AddEntity(newEntity);
+        //     newArchetype = World.GetArchetype(newEntity.ArchetypeId);
+        //     oldArchetype = World.GetArchetype(entity.ArchetypeId);
+        //     // newTypes.Remove(typeof(T));
+            
+        //     for (int i = 0; i < newTypes.Count-1; i++)
+        //     {
+        //         newArchetype.SetComponent(entity,  newTypes[i], oldArchetype.GetComponent(entity, newTypes[i]));
+        //     }
+        //     newArchetype.SetComponent(entity, value);
+        //     World.RemoveEntity(entity);
+        //     entity = newEntity;
+        // }
+        public void AddComponent<T>(ref Entity entity, T value)
         {
-            ArchetypeId oldArchetypeId = entity.ArchetypeId;
-            Type[] oldArchetypeIdTypes = oldArchetypeId.Types.ToArray();
-            ArchetypeId newArchetypeId = new ArchetypeId(oldArchetypeIdTypes, typeof(T));
-            Entity newEntity = new Entity(entity.Id, newArchetypeId);
+            List<Type> newTypes = new List<Type>(entity.ArchetypeId.Types);
+            ArchetypeId newArchetypeId;
+            Entity newEntity;
             Archetype oldArchetype;
-            Archetype newArchetype;
 
-            World.AddEntity(newEntity);
+            newTypes.Add(typeof(T));
+            newArchetypeId = new ArchetypeId(newTypes.ToArray());
+            newEntity = new Entity(entity.Id, newArchetypeId);
 
-            oldArchetype = World.GetArchetype(oldArchetypeId);
-            newArchetype = World.GetArchetype(newArchetypeId);
+            oldArchetype = World.GetArchetype(entity.ArchetypeId);
+            Dictionary<Type, dynamic> data = oldArchetype.GetEntityData(entity);
+            data.Add(typeof(T), value);
+            World.AddEntity(newEntity, data);
 
-            for (int i = 0; i < oldArchetypeIdTypes.Length; i++)
-            {
-                newArchetype.SetComponent(entity,  oldArchetypeIdTypes[i], oldArchetype.GetComponent(entity, oldArchetypeIdTypes[i]));
-            }
-            newArchetype.SetComponent(entity, value);
-
-            oldArchetype.RemoveEntity(entity);
-            return newEntity;
+            World.RemoveEntity(entity);
+            entity = newEntity;
         }
-        public Entity RemoveComponent<T>(Entity entity)
+        public void RemoveComponent<T>(ref Entity entity)
         {
-            ArchetypeId oldArchetypeId = entity.ArchetypeId;
-            Type[] oldArchetypeIdTypes = oldArchetypeId.Types.ToArray();
-            ArchetypeId newArchetypeId = new ArchetypeId(oldArchetypeIdTypes, typeof(T));
-            Entity newEntity = new Entity(entity.Id, newArchetypeId);
+            List<Type> newTypes = new List<Type>(entity.ArchetypeId.Types);
+            ArchetypeId newArchetypeId;
+            Entity newEntity;
             Archetype oldArchetype;
             Archetype newArchetype;
 
+            newTypes.Remove(typeof(T));
+            newArchetypeId = new ArchetypeId(newTypes.ToArray());
+            newEntity = new Entity(entity.Id, newArchetypeId);
             World.AddEntity(newEntity);
+            newArchetype = World.GetArchetype(newEntity.ArchetypeId);
+            oldArchetype = World.GetArchetype(entity.ArchetypeId);
 
-            oldArchetype = World.GetArchetype(oldArchetypeId);
-            newArchetype = World.GetArchetype(newArchetypeId);
-
-            for (int i = 0; i < oldArchetypeIdTypes.Length; i++)
+            for (int i = 0; i < newTypes.Count; i++)
             {
-                newArchetype.SetComponent(entity,  oldArchetypeIdTypes[i], oldArchetype.GetComponent(entity, oldArchetypeIdTypes[i]));
+                newArchetype.SetComponent(entity,  newTypes[i], oldArchetype.GetComponent(entity, newTypes[i]));
             }
-
-            oldArchetype.RemoveEntity(entity);
-            return newEntity;
+            World.RemoveEntity(entity);
+            entity = newEntity;
         }
         public void RemoveEntity(Entity entity)
         {
@@ -141,12 +161,26 @@ namespace Vecs
             List<Archetype> archetypes = new List<Archetype>();
             for (int i = 0; i < ArchetypeIds.Count; i++)
             {
+                // archetypes.Add(World.GetArchetype(ArchetypeIds.ElementAt(i)));
                 if (World.Archetypes.TryGetValue(ArchetypeIds.ElementAt(i), out Archetype archetype) == true)
                 {
                     archetypes.Add(archetype);
                 }
             }
             return archetypes.ToArray();
+        }
+        public void Foreach(in Operation<Entity> operation)
+        {
+            Archetype[] archetypes = GetArchetypes();
+            for (int i = 0; i < archetypes.Length; i++)
+            {
+                Archetype archetype = archetypes[i];
+                Span<Entity> entities = archetype.Entities;
+                for (int j = 0; j < archetype.Entities.Length; j++)
+                {
+                    operation(ref entities[j]);
+                }
+            }
         }
         public void Foreach<T1>(in Operation<T1> operation)
         {

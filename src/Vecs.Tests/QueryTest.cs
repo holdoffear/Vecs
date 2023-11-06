@@ -73,14 +73,29 @@ namespace Vecs.Tests
             Entity entity = world.CreateEntity();
             Mana mana = new Mana(3);
             Health health = new Health(10);
-            entity = query.AddComponent(entity, mana);
-            entity = query.AddComponent(entity, health);
+            query.AddComponent(ref entity, mana);
+            query.AddComponent(ref entity, health);
 
             Archetype archetype = world.GetArchetype(entity.ArchetypeId);
             Mana result = archetype.GetComponent<Mana>(entity);
             Assert.AreEqual(mana, result);
 
             Assert.AreEqual(archetype.GetComponent<Health>(entity), health);
+        }
+        [TestMethod]
+        [DynamicData(nameof(WorldData))]
+        public void RemoveComponent_SingleComponent_ReturnsTrue(World world)
+        {
+            Query query = new Query(world);
+            Entity entity = world.CreateEntity();
+            Mana mana = new Mana(3);
+            Health health = new Health(10);
+            query.AddComponent(ref entity, mana);
+            query.AddComponent(ref entity, health);
+            query.RemoveComponent<Mana>(ref entity);
+
+            bool result = entity.ArchetypeId.Contains(typeof(Mana));
+            Assert.IsFalse(result);
         }
     }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Vecs
 {
-    public struct Archetype
+    public class Archetype
     {
         private Entity[] entities;
         public Span<Entity> Entities {get {return CreateSpan(entities, 0, NextIndex);}}
@@ -37,11 +37,19 @@ namespace Vecs
                 nextIndex = 0;
             }
             entities[nextIndex] = entity;
-            foreach (Type key in Components.Keys)
-            {
-                Components[key].SetValue(null, nextIndex);
-            }
+            // foreach (Type key in Components.Keys)
+            // {
+            //     Components[key].SetValue(null, nextIndex);
+            // }
             nextIndex++;
+        }
+        public void AddEntity(Entity entity, Dictionary<Type, dynamic> data)
+        {
+            AddEntity(entity);
+            foreach (Type type in data.Keys)
+            {
+                components[type].SetValue(data[type], nextIndex-1);
+            }
         }
         public static Span<T> CreateSpan<T>(T[] array, int start, int length)
         {
@@ -70,12 +78,23 @@ namespace Vecs
             Array components = Components[typeof(T)];
             return CreateSpan((T[])components!, 0, NextIndex);
         }
+        public Dictionary<Type, dynamic> GetEntityData(Entity entity)
+        {
+            int index = Array.IndexOf(entities, entity);
+            Dictionary<Type, dynamic> data = new Dictionary<Type, dynamic>();
+            foreach (Type type in Components.Keys)
+            {
+                data.Add(type, components[type].GetValue(index));
+            }
+            return data;
+        }
         private void IncreaseCapacity()
         {
             int newSize = entities.Length*2;
             Array.Resize(ref entities, newSize);
             foreach (Type key in Components.Keys)
             {
+                // Array.Resize();
                 Array newArray = Array.CreateInstance(key, newSize);
                 Array.Copy(components[key], newArray, components[key].Length);  
                 components[key] = newArray;
@@ -113,10 +132,5 @@ namespace Vecs
             array.SetValue(array.GetValue(indexB), indexA);
             array.SetValue(temp, indexB);
         }
-    }
-
-    public struct DefaultArchetype
-    {
-        
     }
 }

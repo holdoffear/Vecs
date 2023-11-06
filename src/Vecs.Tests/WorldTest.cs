@@ -19,7 +19,7 @@ namespace Vecs.Tests
             ArchetypeId result = world.GetArchetype(entity.ArchetypeId).ArchetypeId;
 
             Assert.AreEqual(entity.ArchetypeId, result);
-            Assert.IsTrue(new ArchetypeId(new Type[]{typeof(DefaultArchetype)}) == result);
+            Assert.IsTrue(new ArchetypeId(new Type[]{}) == result);
             // Assert.IsTrue(new ArchetypeId(new Type[]{typeof(DefaultArchetype)}).Equals(result));
             // Assert.AreEqual(new ArchetypeId(new Type[]{typeof(DefaultArchetype)}), result);
         }
