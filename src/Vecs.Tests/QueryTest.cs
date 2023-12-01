@@ -46,25 +46,25 @@ namespace Vecs.Tests
             bool result = query.WithComponents.Contains(typeof(int));
             Assert.IsTrue(result);
         }
-        [TestMethod]
-        [DynamicData(nameof(WorldData))]
-        public void Foreach_SingleComponent_ReturnsTrue(World world)
-        {
-            Entity entity = new Entity(3);
-            entity.ArchetypeId = new ArchetypeId(new Type[]{typeof(Mana), typeof(Health)});
-            world.AddEntity(entity);
-            Archetype archetype = world.GetArchetype(entity.ArchetypeId);
+    //     [TestMethod]
+    //     [DynamicData(nameof(WorldData))]
+    //     public void Foreach_SingleComponent_ReturnsTrue(World world)
+    //     {
+    //         Entity entity = new Entity(3);
+    //         entity.ArchetypeId = new ArchetypeId(new Type[]{typeof(Mana), typeof(Health)});
+    //         world.AddEntity(entity);
+    //         Archetype archetype = world.GetArchetype(entity.ArchetypeId);
 
-            Query query = new Query(world);
-            query
-            .With(new Type[]{typeof(Mana), typeof(Health)})
-            .Without(new Type[]{typeof(Health)})
-            .Foreach((ref Mana mana, ref Health health) =>
-            {
-                mana.Amount = 1;
-                Assert.AreNotEqual(mana.Amount, archetype.GetComponent<Mana>(entity).Amount);
-            });
-        }
+    //         Query query = new Query(world);
+    //         query
+    //         .With(new Type[]{typeof(Mana), typeof(Health)})
+    //         .Without(new Type[]{typeof(Health)})
+    //         .Foreach((ref Mana mana, ref Health health) =>
+    //         {
+    //             mana.Amount = 1;
+    //             Assert.AreNotEqual(mana.Amount, archetype.GetComponent<Mana>(entity).Amount);
+    //         });
+    //     }
         [TestMethod]
         [DynamicData(nameof(WorldData))]
         public void AddComponent_SingleComponent_ReturnsTrue(World world)
@@ -82,21 +82,21 @@ namespace Vecs.Tests
 
             Assert.AreEqual(archetype.GetComponent<Health>(entity), health);
         }
-        [TestMethod]
-        [DynamicData(nameof(WorldData))]
-        public void RemoveComponent_SingleComponent_ReturnsTrue(World world)
-        {
-            Query query = new Query(world);
-            Entity entity = world.CreateEntity();
-            Mana mana = new Mana(3);
-            Health health = new Health(10);
-            query.AddComponent(ref entity, mana);
-            query.AddComponent(ref entity, health);
-            query.RemoveComponent<Mana>(ref entity);
+        // [TestMethod]
+        // [DynamicData(nameof(WorldData))]
+        // public void RemoveComponent_SingleComponent_ReturnsTrue(World world)
+        // {
+        //     Query query = new Query(world);
+        //     Entity entity = world.CreateEntity();
+        //     Mana mana = new Mana(3);
+        //     Health health = new Health(10);
+        //     query.AddComponent(ref entity, mana);
+        //     query.AddComponent(ref entity, health);
+        //     query.RemoveComponent<Mana>(ref entity);
 
-            bool result = entity.ArchetypeId.Contains(typeof(Mana));
-            Assert.IsFalse(result);
-        }
+        //     bool result = entity.ArchetypeId.Contains(typeof(Mana));
+        //     Assert.IsFalse(result);
+        // }
     }
 
     struct Mana

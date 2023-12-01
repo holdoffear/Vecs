@@ -54,11 +54,11 @@ namespace Vecs
             }
             return true;
         }
-        public static bool operator ==(ArchetypeId left, ArchetypeId right)
+        public static bool operator == (ArchetypeId left, ArchetypeId right)
         {
             return left.Equals(right);
         }
-        public static bool operator !=(ArchetypeId left, ArchetypeId right)
+        public static bool operator != (ArchetypeId left, ArchetypeId right)
         {
             return !left.Equals(right);
         }

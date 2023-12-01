@@ -1,136 +1,133 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
+// Implement a dictionary of arrays instead
 namespace Vecs
 {
     public class Archetype
     {
-        private Entity[] entities;
-        public Span<Entity> Entities {get {return CreateSpan(entities, 0, NextIndex);}}
         private ArchetypeId archetypeId;
         public ArchetypeId ArchetypeId {get {return archetypeId;}}
-        private int nextIndex;
-        public int NextIndex {get {return nextIndex;}}
-        private Dictionary<Type, Array> components;
-        private Dictionary<Type, Array> Components {get {return components;}}
+        private List<Entity> entities;
+        public List<Entity> Entities {get{return entities;}}
+        private Dictionary<Type, ArchetypeData> archetypeData;
+        public Dictionary<Type, ArchetypeData> ArchetypeData {get {return archetypeData;}}
         public Archetype(ArchetypeId archetypeId)
         {
-            int initialSize = 1000;
-            nextIndex = -1;
-            this.archetypeId = archetypeId;
-            this.entities = new Entity[initialSize];
-            this.components = new Dictionary<Type, Array>();
-            foreach (Type key in archetypeId.Types)
+            this.archetypeId = new ArchetypeId(archetypeId.Types.ToArray());
+            entities = new List<Entity>();
+            archetypeData = new Dictionary<Type, ArchetypeData>();
+            foreach (Type type in archetypeId.Types)
             {
-                components[key] = Array.CreateInstance(key, initialSize);
+                archetypeData[type] = Activator.CreateInstance(typeof(ArchetypeData<>).MakeGenericType(type)) as ArchetypeData;
             }
         }
         public void AddEntity(Entity entity)
         {
-            //resize
-            if(entities.Length-1 <= nextIndex)
+            entities.Add(entity);
+            foreach (Type type in archetypeData.Keys)
             {
-                IncreaseCapacity();
-            }
-            if(nextIndex < 0)
-            {
-                nextIndex = 0;
-            }
-            entities[nextIndex] = entity;
-            // foreach (Type key in Components.Keys)
-            // {
-            //     Components[key].SetValue(null, nextIndex);
-            // }
-            nextIndex++;
-        }
-        public void AddEntity(Entity entity, Dictionary<Type, dynamic> data)
-        {
-            AddEntity(entity);
-            foreach (Type type in data.Keys)
-            {
-                components[type].SetValue(data[type], nextIndex-1);
+                archetypeData[type].AddDefault();
             }
         }
-        public static Span<T> CreateSpan<T>(T[] array, int start, int length)
-        {
-            if(length > -1)
-            {
-                return new Span<T>(array, start, length);
-            }
-            return new Span<T>(new T[]{});
-        }
+        // public void AddComponent<T>(T Value)
+        // {
+        //     ((ArchetypeData<T>)archetypeData[typeof(T)]).List.Add(Value);
+        // }
         public T GetComponent<T>(Entity entity)
         {
-            int index = Array.IndexOf(entities, entity);
-            if (index == -1)
-            {
-                throw new NotImplementedException();
-            }
-            return (T)Components[typeof(T)].GetValue(index);
+            int index = entities.IndexOf(entity);
+            return ((ArchetypeData<T>)archetypeData[typeof(T)]).List[index];
         }
-        public dynamic GetComponent(Entity entity, Type type)
+        public List<T> GetComponents<T>()
         {
-            int index = Array.IndexOf(entities, entity);
-            return Components[type].GetValue(index);
-        }
-        public Span<T> GetComponents<T>()
-        {
-            Array components = Components[typeof(T)];
-            return CreateSpan((T[])components!, 0, NextIndex);
-        }
-        public Dictionary<Type, dynamic> GetEntityData(Entity entity)
-        {
-            int index = Array.IndexOf(entities, entity);
-            Dictionary<Type, dynamic> data = new Dictionary<Type, dynamic>();
-            foreach (Type type in Components.Keys)
-            {
-                data.Add(type, components[type].GetValue(index));
-            }
-            return data;
-        }
-        private void IncreaseCapacity()
-        {
-            int newSize = entities.Length*2;
-            Array.Resize(ref entities, newSize);
-            foreach (Type key in Components.Keys)
-            {
-                // Array.Resize();
-                Array newArray = Array.CreateInstance(key, newSize);
-                Array.Copy(components[key], newArray, components[key].Length);  
-                components[key] = newArray;
-            }
+            return ((ArchetypeData<T>)archetypeData[typeof(T)]).List;
         }
         public void RemoveEntity(Entity entity)
         {
-            int removeIndex = Array.IndexOf(entities, entity);
-            if(removeIndex > -1)
+            int index = entities.IndexOf(entity);
+            int lastIndex = entities.Count > 1 ? entities.Count-1 : 0;
+            foreach (Type key in ArchetypeData.Keys)
             {
-                if(nextIndex > 0)
-                {
-                    SwapIndices(entities, removeIndex, nextIndex);
-                    foreach (Type key in Components.Keys)
-                    {
-                        SwapIndices(Components[key], removeIndex, Components[key].Length-1);
-                    }
-                }
-                nextIndex--;
+                ArchetypeData[key].RemoveAt(index);
             }
+            entities[index] = entities[lastIndex];
+            entities.RemoveAt(lastIndex);
         }
         public void SetComponent<T>(Entity entity, T value)
         {
-            int index = Array.IndexOf(entities, entity);
-            Components[typeof(T)].SetValue(value, index);
+            int index = entities.IndexOf(entity);
+            ((ArchetypeData<T>)archetypeData[typeof(T)]).List[index] = value;
         }
-        public void SetComponent(Entity entity, Type type, dynamic value)
+    }
+    public interface ArchetypeData
+    {
+        void Add(object val);
+        void AddDefault();
+        void RemoveAt(int index);
+        object GetComponent(int index);
+        dynamic GetList();
+    }
+    public struct ArchetypeData<T> : ArchetypeData
+    {
+        public List<T> List;
+        public ArchetypeData()
         {
-            int index = Array.IndexOf(entities, entity);
-            Components[type].SetValue(value, index);
+            this.List = new List<T>();
         }
-        public static void SwapIndices(Array array, int indexA, int indexB)
+
+        public void Add(object val)
         {
-            dynamic temp = array.GetValue(indexA);
-            array.SetValue(array.GetValue(indexB), indexA);
-            array.SetValue(temp, indexB);
+            List.Add((T)val);
+        }
+
+        public void AddDefault()
+        {
+            List.Add(default(T));
+        }
+
+        public object GetComponent(int index)
+        {
+            return List[index];
+        }
+        public dynamic GetList()
+        {
+            return List;
+        }
+        public void RemoveAt(int index)
+        {
+            int lastIndex = List.Count > 1 ? List.Count-1 : 0;
+            Console.WriteLine(index);
+            Console.WriteLine(lastIndex);
+            List[index] = List[lastIndex];
+            List.RemoveAt(lastIndex);
+        }
+    }
+    public interface ArchetypeHandler
+    {
+        // void AddComponent(Archetype archetype, object component);
+        object GetComponent(Archetype archetype, Entity entity);
+        void SetComponent(Archetype archetype, Entity entity, object component);
+        void Transfer(Entity entity, Archetype oldArchetype, Archetype newArchetype);
+    }
+    public struct ArchetypeHandler<T> : ArchetypeHandler
+    {
+        // public void AddComponent(Archetype archetype, object component)
+        // {
+        //     archetype.AddComponent((T)component);
+        // }
+        public object GetComponent(Archetype archetype, Entity entity)
+        {
+            return archetype.GetComponent<T>(entity);
+        }
+        public void SetComponent(Archetype archetype, Entity entity, object component)
+        {
+            archetype.SetComponent(entity, (T)component);
+        }
+        public void Transfer(Entity entity, Archetype sourceArchetype, Archetype targetArchetype)
+        {
+            targetArchetype.SetComponent(entity, sourceArchetype.GetComponent<T>(entity));
         }
     }
 }

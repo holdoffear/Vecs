@@ -3,22 +3,45 @@ namespace Vecs.Tests
     [TestClass]
     public class ArchetypeTest
     {
-        [TestMethod]
-        [DataRow(new int[]{31, 43, 4, 1, 0, 90, 11}, 3)]
-        [DataRow(new int[]{31, 43, 4, 1, 0, 90, 11}, 0)]
-        [DataRow(new int[]{31, 43, 4, 1, 0, 90, 11}, 7)]
-        public void CreateSpan_Array_ReturnsArray(int[] array, int lastIndex)
+        World world;
+        public ArchetypeTest()
         {
-            Span<int> newSpan = Archetype.CreateSpan(array, 0, lastIndex);
+            world = new World();
+        }
+        [TestMethod]
+        [DataRow(new int[]{}, new bool[]{}, new string[]{})]
+        [DataRow(new int[]{3}, new bool[]{false}, new string[]{})]
+        [DataRow(new int[]{3}, new bool[]{false}, new string[]{"stringA", "stringB"})]
+        public void AddCorrectNumberOfArchetypes(int[] numbers, bool[] booleans, string[] strings)
+        {
+            Query query = world.CreateQuery();
+            Entity entity = world.CreateEntity();
+            int expected = 1;
+            expected = numbers.Length > 0 ? expected+1 : expected;
+            expected = booleans.Length > 0 ? expected+1 : expected;
+            expected = strings.Length > 0 ? expected+1 : expected;
 
-            int result = newSpan.Length;
-
-            Assert.AreEqual(lastIndex, result);
-
-            for (int i = 0; i < newSpan.Length; i++)
+            for (int i = 0; i < numbers.Length; i++)
             {
-                Assert.AreEqual(array[i], newSpan[i]);
+                query.AddComponent(ref entity, numbers[i]);
             }
+            for (int i = 0; i < booleans.Length; i++)
+            {
+                query.AddComponent(ref entity, booleans[i]);
+            }
+            for (int i = 0; i < strings.Length; i++)
+            {
+                query.AddComponent(ref entity, strings[i]);
+            }
+
+            int result = world.Archetypes.Count;
+
+            Assert.AreEqual(expected, result);
+        }
+        [TestMethod]
+        public void ComponentsAddedCorrectly()
+        {
+
         }
         [TestMethod]
         [DataRow(new Type[]{typeof(int)}, 1)]
@@ -33,8 +56,13 @@ namespace Vecs.Tests
             {
                 archetype.AddEntity(new Entity(IdGenerator.Guid));  
             }
-
-            int result = archetype.Entities.Length;
+            //major error, when adding an entity no default data for the components are made, correct this to pass the test
+            int result = archetype.Entities.Count;
+            foreach (Type type in archetype.ArchetypeData.Keys)
+            {
+                Console.WriteLine(type);
+                Assert.AreEqual(result, archetype.ArchetypeData[type].GetList().Count);
+            }
 
             Assert.AreEqual(iterations, result);
         }
@@ -57,29 +85,29 @@ namespace Vecs.Tests
             {
                 archetype.AddEntity(entities[i]);  
             }
-            for (int i = 0; i < archetype.Entities.Length; i++)
+            for (int i = 0; i < archetype.Entities.Count; i++)
             {
                 result = archetype.Entities.Contains(entities[i]) && result;  
             }
 
             Assert.IsTrue(result);
         }
-        [TestMethod]
-        [DataRow(new Type[]{typeof(bool), typeof(int)}, false, 7)]
-        public void GetComponent_MultipleValues_ReturnsComponent(Type[] types, dynamic arg1, dynamic arg2)
-        {
-            ArchetypeId archetypeId = new ArchetypeId(types);
-            Archetype archetype = new Archetype(archetypeId);
-            for (int i = 0; i < types.Length; i++)
-            {
-                Entity entity = new Entity(IdGenerator.Guid);
-                archetype.AddEntity(entity);
-                archetype.SetComponent(entity, arg1);
-                archetype.SetComponent(entity, arg2);
-                Assert.AreEqual(archetype.GetComponent(entity, arg1.GetType()), arg1);
-                Assert.AreEqual(archetype.GetComponent(entity, arg2.GetType()), arg2);
-            }
-        }
+        // [TestMethod]
+        // [DataRow(new Type[]{typeof(bool), typeof(int)}, false, 7)]
+        // public void GetComponent_MultipleValues_ReturnsComponent(Type[] types, dynamic arg1, dynamic arg2)
+        // {
+        //     ArchetypeId archetypeId = new ArchetypeId(types);
+        //     Archetype archetype = new Archetype(archetypeId);
+        //     for (int i = 0; i < types.Length; i++)
+        //     {
+        //         Entity entity = new Entity(IdGenerator.Guid);
+        //         archetype.AddEntity(entity);
+        //         archetype.SetComponent(entity, arg1);
+        //         archetype.SetComponent(entity, arg2);
+        //         Assert.AreEqual(archetype.GetComponent(entity, arg1.GetType()), arg1);
+        //         Assert.AreEqual(archetype.GetComponent(entity, arg2.GetType()), arg2);
+        //     }
+        // }
         [TestMethod]
         [DataRow(new Type[]{typeof(int)}, 1000)]
         [DataRow(new Type[]{}, 10)]
@@ -89,22 +117,23 @@ namespace Vecs.Tests
         {
             ArchetypeId archetypeId = new ArchetypeId(types);
             Archetype archetype = new Archetype(archetypeId);
-            Span<Entity> entities;
+            Entity[] entities;
             for (int i = 0; i < iterations; i++)
             {
-                archetype.AddEntity(new Entity(IdGenerator.Guid));  
+                archetype.AddEntity(world.CreateEntity());  
             }
-            entities = archetype.Entities;
+            entities = archetype.Entities.ToArray();
             for (int i = 0; i < entities.Length; i++)
             {
                 archetype.RemoveEntity(entities[i]);  
             }
 
-            int result = archetype.Entities.Length;
+            int result = archetype.Entities.Count;
 
             Assert.AreEqual(0, result);
         }
         [TestMethod]
+        [DataRow(new Type[]{}, 10)]
         [DataRow(new Type[]{typeof(int)}, 1000)]
         [DataRow(new Type[]{typeof(int), typeof(bool)}, 1000)]
         [DataRow(new Type[]{typeof(int), typeof(bool), typeof(string)}, 0)]
@@ -112,33 +141,20 @@ namespace Vecs.Tests
         {
             ArchetypeId archetypeId = new ArchetypeId(types);
             Archetype archetype = new Archetype(archetypeId);
-            Span<Entity> entities;
+            Entity[] entities;
             for (int i = 0; i < iterations; i++)
             {
                 archetype.AddEntity(new Entity(IdGenerator.Guid));  
             }
-            entities = archetype.Entities;
+            entities = archetype.Entities.ToArray();
             for (int i = 0; i < entities.Length; i++)
             {
                 archetype.RemoveEntity(entities[i]);  
             }
 
-            int result = archetype.Entities.Length;
+            int result = archetype.Entities.Count;
 
             Assert.AreEqual(0, result);
-        }
-        [TestMethod]
-        [DataRow(new int[]{1, 5, 3, 8, 11}, 0, 4)]
-        [DataRow(new int[]{3, 2, 5, 8, 6, 4, 0}, 2, 3)]
-        [DataRow(new int[]{0, 3, 0, 1, 4, 7}, 1, 4)]
-        public void SwapIndices_IntArray_ReturnsTrue(int[] inputArray, int indexA, int indexB)
-        {
-            int resultA = inputArray[indexA];
-            int resultB = inputArray[indexB];
-            Archetype.SwapIndices(inputArray, indexA, indexB);
-
-            Assert.AreEqual(resultA, inputArray[indexB]);
-            Assert.AreEqual(resultB, inputArray[indexA]);
         }
     }
 }

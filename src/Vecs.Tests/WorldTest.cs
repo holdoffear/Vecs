@@ -9,6 +9,7 @@ namespace Vecs.Tests
         [DataRow(1)]
         public void CreateEntity_MultipleEntities_ReturnsTrue(int iterations)
         {
+            Archetype archetype;
             World world = new World();
             Entity entity = world.CreateEntity();
             for (int i = 0; i < iterations-1; i++)
@@ -16,12 +17,11 @@ namespace Vecs.Tests
                 world.CreateEntity();
             }
 
-            ArchetypeId result = world.GetArchetype(entity.ArchetypeId).ArchetypeId;
+            archetype = world.GetArchetype(entity.ArchetypeId);
 
-            Assert.AreEqual(entity.ArchetypeId, result);
-            Assert.IsTrue(new ArchetypeId(new Type[]{}) == result);
-            // Assert.IsTrue(new ArchetypeId(new Type[]{typeof(DefaultArchetype)}).Equals(result));
-            // Assert.AreEqual(new ArchetypeId(new Type[]{typeof(DefaultArchetype)}), result);
+            bool result = archetype.Entities.Contains(entity);
+
+            Assert.IsTrue(result);
         }
         [TestMethod]
         [DataRow(new Type[]{typeof(bool)})]
@@ -106,7 +106,7 @@ namespace Vecs.Tests
                 bool result = archetype.Entities.Contains(entities[i]);
                 Assert.IsFalse(result);
 
-                Assert.AreEqual(entities.Length - i-1, archetype.Entities.Length);
+                Assert.AreEqual(entities.Length - i-1, archetype.Entities.Count);
             }
         }
     }   
