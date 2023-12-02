@@ -21,7 +21,7 @@ namespace Vecs
                 }
                 for (int i = 0; i < withoutComponents.Length; i++)
                 {
-                    if (ArchetypeIds.TryGetValue(withComponents[i], out List<ArchetypeId> withoutArchetypeIds) == true)
+                    if (ArchetypeIds.TryGetValue(withoutComponents[i], out List<ArchetypeId> withoutArchetypeIds) == true)
                     {
                         queryArchetypeIds.ExceptWith(withoutArchetypeIds);
                     }
