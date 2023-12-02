@@ -5,7 +5,7 @@ using System.Linq;
 // Implement a dictionary of arrays instead
 namespace Vecs
 {
-    public class Archetype
+    public struct Archetype
     {
         private ArchetypeId archetypeId;
         public ArchetypeId ArchetypeId {get {return archetypeId;}}
@@ -31,6 +31,10 @@ namespace Vecs
                 archetypeData[type].AddDefault();
             }
         }
+        // public void AddEntity(Entity entity)
+        // {
+        //     entities.Add(entity);
+        // }
         // public void AddComponent<T>(T Value)
         // {
         //     ((ArchetypeData<T>)archetypeData[typeof(T)]).List.Add(Value);
