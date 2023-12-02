@@ -3,116 +3,72 @@ namespace Vecs.Tests
     [TestClass]
     public class QueryTest
     {
-        public static IEnumerable<object[]> WorldData
+        Query query = new Query();
+        public static IEnumerable<object[]> QueryData
         {
             get
             {
-                World worldA = new World();
-                World worldB = new World();
-                World worldC = new World();
-                Entity entityA = new Entity(3, new ArchetypeId(new Type[]{typeof(float), typeof(bool), typeof(double)}));
-                Entity entityB = new Entity(4, new ArchetypeId(new Type[]{typeof(string)}));
-                Entity entityC = new Entity(7, new ArchetypeId(new Type[]{typeof(int)}));
-
-                worldA.AddEntity(entityA);
-                worldA.AddEntity(entityB);
-                worldB.AddEntity(entityA);
-                worldB.AddEntity(entityB);
-                worldB.AddEntity(entityC);
                 return new[]
                 {
-                    new object[] {worldA},
-                    new object[] {worldB},
-                    new object[] {worldC},
+                    new object[] {new Type[]{}, new Type[]{}},
+                    new object[] {new Type[]{typeof(bool), typeof(long)}, new Type[]{}},
+                    new object[] {new Type[]{}, new Type[]{typeof(int), typeof(bool)}},
+                    new object[] {new Type[]{typeof(string)}, new Type[]{typeof(string)}},
                 };
             }
         }
-        public static World CreateWorld(object[] types)
+        [TestMethod]
+        [DynamicData(nameof(QueryData))]
+        public void WithHasCorrectCount(Type[] with, Type[] without)
         {
-            World world = new World();
-            for (int i = 0; i < 1000; i++)
+            query.With(with).Without(without);
+
+            int result = query.WithComponents.Count;
+
+            Assert.AreEqual(with.Length, result);
+        }
+        [TestMethod]
+        [DynamicData(nameof(QueryData))]
+        public void WithHasCorrectTypes(Type[] with, Type[] without)
+        {
+            query.With(with).Without(without);
+
+            for (int i = 0; i < with.Length; i++)
             {
-                world.CreateEntity();
-            }
-            return world;
+                int result = query.WithComponents.Count(x => x == with[i]);
+                Assert.AreEqual(1, result);
+            }           
         }
         [TestMethod]
-        [DynamicData(nameof(WorldData))]
-        public void With_TwoTypes_ReturnsTrue(World world)
+        [DynamicData(nameof(QueryData))]
+        public void WithoutHasCorrectCount(Type[] with, Type[] without)
         {
-            Query query = new Query(world);
-            query.With(new Type[]{typeof(int), typeof(float)});
+            query.With(with).Without(without);
 
-            bool result = query.WithComponents.Contains(typeof(int));
-            Assert.IsTrue(result);
+            int result = query.WithoutComponents.Count;
+
+            Assert.AreEqual(without.Length, result);
         }
-    //     [TestMethod]
-    //     [DynamicData(nameof(WorldData))]
-    //     public void Foreach_SingleComponent_ReturnsTrue(World world)
-    //     {
-    //         Entity entity = new Entity(3);
-    //         entity.ArchetypeId = new ArchetypeId(new Type[]{typeof(Mana), typeof(Health)});
-    //         world.AddEntity(entity);
-    //         Archetype archetype = world.GetArchetype(entity.ArchetypeId);
-
-    //         Query query = new Query(world);
-    //         query
-    //         .With(new Type[]{typeof(Mana), typeof(Health)})
-    //         .Without(new Type[]{typeof(Health)})
-    //         .Foreach((ref Mana mana, ref Health health) =>
-    //         {
-    //             mana.Amount = 1;
-    //             Assert.AreNotEqual(mana.Amount, archetype.GetComponent<Mana>(entity).Amount);
-    //         });
-    //     }
         [TestMethod]
-        [DynamicData(nameof(WorldData))]
-        public void AddComponent_SingleComponent_ReturnsTrue(World world)
+        [DynamicData(nameof(QueryData))]
+        public void WithoutHasCorrectTypes(Type[] with, Type[] without)
         {
-            Query query = new Query(world);
-            Entity entity = world.CreateEntity();
-            Mana mana = new Mana(3);
-            Health health = new Health(10);
-            query.AddComponent(ref entity, mana);
-            query.AddComponent(ref entity, health);
+            query.With(with).Without(without);
 
-            Archetype archetype = world.GetArchetype(entity.ArchetypeId);
-            Mana result = archetype.GetComponent<Mana>(entity);
-            Assert.AreEqual(mana, result);
-
-            Assert.AreEqual(archetype.GetComponent<Health>(entity), health);
+            for (int i = 0; i < without.Length; i++)
+            {
+                int result = query.WithoutComponents.Count(x => x == without[i]);
+                Assert.AreEqual(1, result);
+            }           
         }
-        // [TestMethod]
-        // [DynamicData(nameof(WorldData))]
-        // public void RemoveComponent_SingleComponent_ReturnsTrue(World world)
-        // {
-        //     Query query = new Query(world);
-        //     Entity entity = world.CreateEntity();
-        //     Mana mana = new Mana(3);
-        //     Health health = new Health(10);
-        //     query.AddComponent(ref entity, mana);
-        //     query.AddComponent(ref entity, health);
-        //     query.RemoveComponent<Mana>(ref entity);
-
-        //     bool result = entity.ArchetypeId.Contains(typeof(Mana));
-        //     Assert.IsFalse(result);
-        // }
-    }
-
-    struct Mana
-    {
-        public int Amount;
-        public Mana(int amount)
+        [TestMethod]
+        [DynamicData(nameof(QueryData))]
+        public void Clear(Type[] with, Type[] without)
         {
-            this.Amount = amount;
-        }
-    }
-    struct Health
-    {
-        public int Amount;
-        public Health(int amount)
-        {
-            this.Amount = amount;
+            query.With(with).Without(without);
+            query.Clear();
+            int result = query.WithComponents.Count + query.WithoutComponents.Count;
+            Assert.AreEqual(0, result);
         }
     }
 }

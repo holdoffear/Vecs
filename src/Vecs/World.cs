@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Vecs
 {
-    public struct World
+    public partial struct World
     {
         private Dictionary<ArchetypeId, Archetype> archetypes;
         private Dictionary<Type, List<ArchetypeId>> archetypeIds;
@@ -28,7 +28,7 @@ namespace Vecs
                 ArchetypeIds[type].Add(archetypeId);
             }
         }
-        public void AddComponentToEntity<T>(ref Entity entity, T value)
+        public void AddComponent<T>(ref Entity entity, T value)
         {
             Archetype currentArchetype;
             Archetype newArchetype;
@@ -68,10 +68,6 @@ namespace Vecs
             Entity entity = new Entity(IdGenerator.Guid);
             AddEntity(entity);
             return entity;
-        }
-        public Query CreateQuery()
-        {
-            return new Query(this);
         }
         public Archetype GetArchetype(ArchetypeId archetypeId)
         {

@@ -3,18 +3,27 @@ namespace Vecs.Tests
     [TestClass]
     public class ArchetypeTest
     {
-        World world;
-        public ArchetypeTest()
+        World world = new World();
+
+        public static IEnumerable<object[]> ArchetypeData
         {
-            world = new World();
+            get
+            {
+                return new[]
+                {
+                    new object[] {new ArchetypeId(new Type[]{}), 5},
+                    new object[] {new ArchetypeId(new Type[]{typeof(int)}), 0},
+                    new object[] {new ArchetypeId(new Type[]{typeof(bool), typeof(string)}), 100}
+                };
+            }
         }
+
         [TestMethod]
         [DataRow(new int[]{}, new bool[]{}, new string[]{})]
         [DataRow(new int[]{3}, new bool[]{false}, new string[]{})]
         [DataRow(new int[]{3}, new bool[]{false}, new string[]{"stringA", "stringB"})]
         public void AddCorrectNumberOfArchetypes(int[] numbers, bool[] booleans, string[] strings)
         {
-            Query query = world.CreateQuery();
             Entity entity = world.CreateEntity();
             int expected = 1;
             expected = numbers.Length > 0 ? expected+1 : expected;
@@ -23,15 +32,15 @@ namespace Vecs.Tests
 
             for (int i = 0; i < numbers.Length; i++)
             {
-                query.AddComponent(ref entity, numbers[i]);
+                world.AddComponent(ref entity, numbers[i]);
             }
             for (int i = 0; i < booleans.Length; i++)
             {
-                query.AddComponent(ref entity, booleans[i]);
+                world.AddComponent(ref entity, booleans[i]);
             }
             for (int i = 0; i < strings.Length; i++)
             {
-                query.AddComponent(ref entity, strings[i]);
+                world.AddComponent(ref entity, strings[i]);
             }
 
             int result = world.Archetypes.Count;
@@ -39,9 +48,18 @@ namespace Vecs.Tests
             Assert.AreEqual(expected, result);
         }
         [TestMethod]
-        public void ComponentsAddedCorrectly()
+        [DynamicData(nameof(ArchetypeData))]
+        public void CorrectNumberOfEntities(ArchetypeId archetypeId, int entityCount)
         {
+            Archetype archetype = new Archetype(archetypeId);
+            for (int i = 0; i < entityCount; i++)
+            {
+                archetype.AddEntity(world.CreateEntity());
+            }
 
+            int result = archetype.Entities.Count;
+
+            Assert.AreEqual(entityCount, result);
         }
         [TestMethod]
         [DataRow(new Type[]{typeof(int)}, 1)]
@@ -71,7 +89,7 @@ namespace Vecs.Tests
         [DataRow(new Type[]{}, 1)]
         [DataRow(new Type[]{typeof(int), typeof(bool)}, 2)]
         [DataRow(new Type[]{typeof(int), typeof(bool), typeof(string)}, 0)]
-        public void AddEntity_MultipleEntity_ReturnsEntity(Type[] types, int iterations)
+        public void ContainsCorrectEntity(Type[] types, int iterations)
         {
             ArchetypeId archetypeId = new ArchetypeId(types);
             Archetype archetype = new Archetype(archetypeId);
@@ -92,22 +110,6 @@ namespace Vecs.Tests
 
             Assert.IsTrue(result);
         }
-        // [TestMethod]
-        // [DataRow(new Type[]{typeof(bool), typeof(int)}, false, 7)]
-        // public void GetComponent_MultipleValues_ReturnsComponent(Type[] types, dynamic arg1, dynamic arg2)
-        // {
-        //     ArchetypeId archetypeId = new ArchetypeId(types);
-        //     Archetype archetype = new Archetype(archetypeId);
-        //     for (int i = 0; i < types.Length; i++)
-        //     {
-        //         Entity entity = new Entity(IdGenerator.Guid);
-        //         archetype.AddEntity(entity);
-        //         archetype.SetComponent(entity, arg1);
-        //         archetype.SetComponent(entity, arg2);
-        //         Assert.AreEqual(archetype.GetComponent(entity, arg1.GetType()), arg1);
-        //         Assert.AreEqual(archetype.GetComponent(entity, arg2.GetType()), arg2);
-        //     }
-        // }
         [TestMethod]
         [DataRow(new Type[]{typeof(int)}, 1000)]
         [DataRow(new Type[]{}, 10)]
