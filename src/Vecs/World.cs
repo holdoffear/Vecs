@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 
 namespace Vecs
 {
@@ -69,6 +70,12 @@ namespace Vecs
             AddEntity(entity);
             return entity;
         }
+        public Entity CreateEntity(params Type[] components)
+        {
+            Entity entity = new Entity(IdGenerator.Guid, new ArchetypeId(components));
+            AddEntity(entity);
+            return entity;
+        }
         public Archetype GetArchetype(ArchetypeId archetypeId)
         {
             return Archetypes[archetypeId];
@@ -102,6 +109,36 @@ namespace Vecs
             {
                 ArchetypeIds[types.ElementAt(i)].Remove(archetypeId);
             }
+        }
+        public void RemoveComponent<T>(ref Entity entity)
+        {            
+            RemoveComponent(ref entity, typeof(T));
+        }
+        public void RemoveComponent(ref Entity entity, Type removeType)
+        {
+            Archetype currentArchetype;
+            Archetype newArchetype;
+            ArchetypeId archetypeId = new ArchetypeId(entity.ArchetypeId.Types.ToArray());
+            archetypeId.Types.ExceptWith(new Type[]{removeType});
+            Entity newEntity = new Entity(entity.Id, archetypeId);
+
+            currentArchetype = archetypes[entity.ArchetypeId];
+            // AddEntity(newEntity);
+            // newArchetype = Archetypes[newEntity.ArchetypeId];
+            if (archetypes.TryGetValue(newEntity.ArchetypeId, out newArchetype) == false)
+            {
+                AddArchetype(newEntity.ArchetypeId);
+                newArchetype = Archetypes[newEntity.ArchetypeId];
+            }
+            newArchetype.AddEntity(newEntity);
+
+            foreach (Type type in newArchetype.ArchetypeId.Types)
+            {
+                ArchetypeHandler handler = Activator.CreateInstance(typeof(ArchetypeHandler<>).MakeGenericType(type)) as ArchetypeHandler;
+                handler.Transfer(entity, currentArchetype, newArchetype);
+            }
+            currentArchetype.RemoveEntity(entity);
+            entity = newEntity;
         }
         public void RemoveEntity(Entity entity)
         {
