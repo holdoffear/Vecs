@@ -3,6 +3,63 @@ namespace Vecs.Tests
     [TestClass]
     public class WorldTest
     {
+        public static IEnumerable<object[]> WorldData
+        {
+            get
+            {
+                World worldA = new World();
+                World worldB = new World();
+
+                worldA.CreateEntity(typeof(bool));
+                worldA.CreateEntity(typeof(string));
+                worldA.CreateEntity(typeof(bool), typeof(int));
+                worldA.CreateEntity(typeof(long));
+                worldA.CreateEntity();
+
+                return new[]
+                {
+                    new object[]{worldA, new Type[]{typeof(bool), typeof(string)}, typeof(int)},
+                    new object[]{worldB, new Type[]{}, typeof(bool)},
+                    new object[]{worldB, new Type[]{typeof(bool)}, typeof(bool)}
+                };
+            }
+        }
+        [TestMethod]
+        [DynamicData(nameof(WorldData))]
+        public void RemoveComponent(World world, Type[] archetypeIdTypes, Type removeType)
+        {
+            Archetype archetype;
+            Entity entity = world.CreateEntity(archetypeIdTypes);
+
+            world.RemoveComponent(ref entity, removeType);
+            archetype = world.GetArchetype(entity.ArchetypeId);
+
+            int result = archetype.Entities.Count(x => x.Equals(entity));
+
+            Assert.AreEqual(1, result);
+        }
+        [TestMethod]
+        [DynamicData(nameof(WorldData))]
+        public void CreateEntityWithComponents(World world, Type[] archetypeIdTypes, Type type)
+        {
+            Entity entity = world.CreateEntity(archetypeIdTypes);
+            Archetype archetype = world.GetArchetype(entity.ArchetypeId);
+            
+            int result = archetype.Entities.Count(x => x.Equals(entity));
+
+            Assert.AreEqual(1, result);
+        }
+        [TestMethod]
+        [DynamicData(nameof(WorldData))]
+        public void CreateEntityWithTypesHasCorrectArchetypeId(World world, Type[] archetypeIdTypes, Type type)
+        {
+            ArchetypeId archetypeId = new ArchetypeId(archetypeIdTypes);
+            Entity entity = world.CreateEntity(archetypeIdTypes);
+
+            ArchetypeId result = entity.ArchetypeId;
+
+            Assert.IsTrue(archetypeId == result);
+        }
         [TestMethod]
         [DataRow(1000)]
         [DataRow(0)]
