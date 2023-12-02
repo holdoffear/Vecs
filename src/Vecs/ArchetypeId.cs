@@ -38,7 +38,6 @@ namespace Vecs
         {
             return Types.ToArray();
         }
-
         public bool Equals(ArchetypeId other)
         {
             if (Types.Count != other.Types.Count)
