@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://dql41t5khft7o"]
 
-[ext_resource type="Script" path="res://Main(GDScript).gd" id="1_hfhs7"]
-[ext_resource type="Script" path="res://Camera.gd" id="2_c571g"]
+[ext_resource type="Script" uid="uid://cyg388ksbc0ic" path="res://Main(GDScript).gd" id="1_hfhs7"]
+[ext_resource type="Script" uid="uid://bmbp80aok4pqp" path="res://Camera.gd" id="2_c571g"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_4kfuw"]
 
@@ -16,7 +16,7 @@ sky = SubResource("Sky_r5oaj")
 script = ExtResource("1_hfhs7")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3.38635)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 30)
 script = ExtResource("2_c571g")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]

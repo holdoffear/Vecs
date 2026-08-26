@@ -1,10 +1,10 @@
 .vscode
 
 # main
-src/Vecs/obj
-src/Vecs/bin
+src/Vecs/obj/
+src/Vecs/bin/
 
 # tests
-src/Vecs.Tests/TestResults
+src/Vecs.Tests/TestResults/
 src/Vecs.Tests/obj/
-src/Vecs.Tests/bin
+src/Vecs.Tests/bin/

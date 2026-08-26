@@ -38,7 +38,6 @@ namespace Vecs
         {
             return Types.ToArray();
         }
-
         public bool Equals(ArchetypeId other)
         {
             if (Types.Count != other.Types.Count)
@@ -54,11 +53,11 @@ namespace Vecs
             }
             return true;
         }
-        public static bool operator ==(ArchetypeId left, ArchetypeId right)
+        public static bool operator == (ArchetypeId left, ArchetypeId right)
         {
             return left.Equals(right);
         }
-        public static bool operator !=(ArchetypeId left, ArchetypeId right)
+        public static bool operator != (ArchetypeId left, ArchetypeId right)
         {
             return !left.Equals(right);
         }

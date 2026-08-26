@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 
 namespace Vecs
 {
-    public struct World
+    public partial struct World
     {
         private Dictionary<ArchetypeId, Archetype> archetypes;
         private Dictionary<Type, List<ArchetypeId>> archetypeIds;
@@ -17,14 +18,7 @@ namespace Vecs
         }
         public void AddArchetype(ArchetypeId archetypeId)
         {
-            Archetype archetype = new Archetype(archetypeId);
-            Archetypes.Add(archetypeId, archetype);
-            // if (archetypeIds.Count < 1)
-            // {
-            //     ArchetypeIds.Add(null, new List<ArchetypeId>());
-            //     ArchetypeIds[null].Add(archetypeId);
-            //     return;
-            // }
+            Archetypes.Add(archetypeId, new Archetype(archetypeId));
 
             foreach (Type type in archetypeId.Types)
             {
@@ -34,7 +28,31 @@ namespace Vecs
                 }
                 ArchetypeIds[type].Add(archetypeId);
             }
+        }
+        public void AddComponent<T>(ref Entity entity, T value)
+        {
+            Archetype currentArchetype;
+            Archetype newArchetype;
+            Entity newEntity = new Entity(entity.Id, new ArchetypeId(entity.ArchetypeId.Types.ToArray(), typeof(T)));
 
+            currentArchetype = archetypes[entity.ArchetypeId];
+            // AddEntity(newEntity);
+            // newArchetype = Archetypes[newEntity.ArchetypeId];
+            if (archetypes.TryGetValue(newEntity.ArchetypeId, out newArchetype) == false)
+            {
+                AddArchetype(newEntity.ArchetypeId);
+                newArchetype = Archetypes[newEntity.ArchetypeId];
+            }
+            newArchetype.AddEntity(newEntity);
+
+            foreach (Type type in currentArchetype.ArchetypeId.Types)
+            {
+                ArchetypeHandler handler = Activator.CreateInstance(typeof(ArchetypeHandler<>).MakeGenericType(type)) as ArchetypeHandler;
+                handler.Transfer(entity, currentArchetype, newArchetype);
+            }
+            newArchetype.SetComponent(entity, value);
+            currentArchetype.RemoveEntity(entity);
+            entity = newEntity;
         }
         public void AddEntity(Entity entity)
         {
@@ -46,19 +64,15 @@ namespace Vecs
             }
             archetype.AddEntity(entity);
         }
-        public void AddEntity(Entity entity, Dictionary<Type, dynamic> data)
-        {
-            Archetype archetype;
-            if(Archetypes.TryGetValue(entity.ArchetypeId, out archetype) == false)
-            {
-                AddArchetype(entity.ArchetypeId);
-                archetype = Archetypes[entity.ArchetypeId];
-            }
-            archetype.AddEntity(entity, data);
-        }
         public Entity CreateEntity()
         {
             Entity entity = new Entity(IdGenerator.Guid);
+            AddEntity(entity);
+            return entity;
+        }
+        public Entity CreateEntity(params Type[] components)
+        {
+            Entity entity = new Entity(IdGenerator.Guid, new ArchetypeId(components));
             AddEntity(entity);
             return entity;
         }
@@ -95,6 +109,36 @@ namespace Vecs
             {
                 ArchetypeIds[types.ElementAt(i)].Remove(archetypeId);
             }
+        }
+        public void RemoveComponent<T>(ref Entity entity)
+        {            
+            RemoveComponent(ref entity, typeof(T));
+        }
+        public void RemoveComponent(ref Entity entity, Type removeType)
+        {
+            Archetype currentArchetype;
+            Archetype newArchetype;
+            ArchetypeId archetypeId = new ArchetypeId(entity.ArchetypeId.Types.ToArray());
+            archetypeId.Types.ExceptWith(new Type[]{removeType});
+            Entity newEntity = new Entity(entity.Id, archetypeId);
+
+            currentArchetype = archetypes[entity.ArchetypeId];
+            // AddEntity(newEntity);
+            // newArchetype = Archetypes[newEntity.ArchetypeId];
+            if (archetypes.TryGetValue(newEntity.ArchetypeId, out newArchetype) == false)
+            {
+                AddArchetype(newEntity.ArchetypeId);
+                newArchetype = Archetypes[newEntity.ArchetypeId];
+            }
+            newArchetype.AddEntity(newEntity);
+
+            foreach (Type type in newArchetype.ArchetypeId.Types)
+            {
+                ArchetypeHandler handler = Activator.CreateInstance(typeof(ArchetypeHandler<>).MakeGenericType(type)) as ArchetypeHandler;
+                handler.Transfer(entity, currentArchetype, newArchetype);
+            }
+            currentArchetype.RemoveEntity(entity);
+            entity = newEntity;
         }
         public void RemoveEntity(Entity entity)
         {

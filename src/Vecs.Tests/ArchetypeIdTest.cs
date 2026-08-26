@@ -5,20 +5,27 @@ namespace Vecs.Tests
     [TestClass]
     public class ArchetypeIdTest
     {
-        // [TestMethod]
-        // [DataRow(new Type[]{typeof(string), typeof(bool)}, typeof(int))]
-        // [DataRow(new Type[]{}, typeof(int))]
-        // [DataRow(new Type[]{typeof(string)}, typeof(int))]
-        // [DataRow(new Type[]{typeof(string), typeof(bool), typeof(float)}, typeof(int))]
-        // public void ArchetypeIdConstructor_ConstructType_ReturnsTrue(Type[] inputTypeArray, Type inputType)
-        // {
-        //     ArchetypeId archetypeId = new ArchetypeId(inputTypeArray, inputType);
-        //     bool result = archetypeId.Count == inputTypeArray.Length + 1;
-        //     Assert.IsTrue(result);
+        [TestMethod]
+        [DataRow(new Type[]{typeof(string), typeof(bool)}, typeof(int))]
+        [DataRow(new Type[]{}, typeof(int))]
+        [DataRow(new Type[]{typeof(string)}, typeof(int))]
+        [DataRow(new Type[]{typeof(string), typeof(bool), typeof(float)}, typeof(int))]
+        public void ConstructorCorrectlyAddsTypeToArchetype(Type[] inputTypeArray, Type inputType)
+        {
+            ArchetypeId archetypeId;
+            int count = 1;
+            if (inputTypeArray.Contains(inputType) == true)
+            {
+                count = 0;
+            }
+            archetypeId = new ArchetypeId(inputTypeArray, inputType);
 
-        //     result = archetypeId.Contains(inputType);
-        //     Assert.IsTrue(result);
-        // }
+            bool result = archetypeId.Types.Count() == inputTypeArray.Length + count;
+            Assert.IsTrue(result);
+
+            int typeCount = archetypeId.Types.Count(x => x == inputType);
+            Assert.AreEqual(1, typeCount);
+        }
         [TestMethod]
         [DataRow(new Type[]{typeof(int), typeof(string), typeof(bool)}, typeof(int))]
         [DataRow(new Type[]{typeof(int), typeof(string), typeof(bool)}, typeof(bool))]
@@ -26,13 +33,14 @@ namespace Vecs.Tests
         public void Contains_SingleType_ReturnsTrue(Type[] input, Type expected)
         {
             ArchetypeId archetypeId = new ArchetypeId(input);
-            bool result = archetypeId.Contains(expected);
-            Assert.IsTrue(result);
+            int result = archetypeId.Types.Count(x => x == expected);
+            Assert.AreEqual(1, result);
         }
         [TestMethod]
         [DataRow(new Type[]{typeof(int), typeof(string), typeof(bool)}, 3)]
         [DataRow(new Type[]{typeof(int), typeof(string)}, 2)]
-        public void Count_TypeArray_ReturnsSingleNumber(Type[] input, int expected)
+        [DataRow(new Type[]{typeof(int), typeof(string), typeof(string)}, 2)]
+        public void ConstructorCorrectlyCreatesTypesWithNoDuplicates(Type[] input, int expected)
         {
             ArchetypeId archetypeId = new ArchetypeId(input);
             int result = archetypeId.Types.Count;
