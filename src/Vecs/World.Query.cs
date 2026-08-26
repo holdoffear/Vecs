@@ -49,6 +49,20 @@ namespace Vecs
             }
             return archetypes.ToArray();
         }
+        public void Query<T1>(Query query, in Operation<T1> operation)
+        {
+            ArchetypeId[] queryArchetypeIds = GetArchetypeIds(query.WithComponents.ToArray(), query.WithoutComponents.ToArray());
+            Archetype[] archetypes = GetArchetypes(queryArchetypeIds);
+            for (int i = 0; i < archetypes.Length; i++)
+            {
+                Archetype archetype = archetypes[i];
+                Span<T1> componentsA = CollectionsMarshal.AsSpan(archetype.GetComponents<T1>());
+                foreach (ref T1 componentA in componentsA)
+                {
+                    operation(ref componentA);
+                }
+            }
+        }
         public void Query<T1, T2>(Query query, in Operation<T1, T2> operation)
         {
             ArchetypeId[] queryArchetypeIds = GetArchetypeIds(query.WithComponents.ToArray(), query.WithoutComponents.ToArray());

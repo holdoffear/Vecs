@@ -80,17 +80,14 @@ namespace Vecs
         {
             this.List = new List<T>();
         }
-
         public void Add(object val)
         {
             List.Add((T)val);
         }
-
         public void AddDefault()
         {
             List.Add(default(T));
         }
-
         public object GetComponent(int index)
         {
             return List[index];
