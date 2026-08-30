@@ -2,6 +2,15 @@
 [TestClass]
 public class WorldTest
 {
+    public static IEnumerable<(World world, Entity entity, int num)> AddComponentData(int count)
+    {
+        World world = new(count);
+        for (int i = 0; i < count; i++)
+        {
+            Entity entity = world.CreateEntity('c');
+            yield return (world, entity, i);
+        }
+    }
     public static IEnumerable<(World world, int num)> CreateEntityOneComponentData(int count)
     {
         World world = new(count);
@@ -19,6 +28,15 @@ public class WorldTest
             yield return (world, entity, i);
         }
     }
+    public static IEnumerable<(World world, Entity entity)> RemoveEntityData(int count)
+    {
+        World world = new(count);
+        for (int i = 0; i < count; i++)
+        {
+            Entity entity = world.CreateEntity(i);
+            yield return (world, entity);
+        }
+    }
     public static IEnumerable<(World world, Entity entity, int changeTo)>SetComponentOneComponentData(int count)
     {
         World world = new(count);
@@ -34,9 +52,18 @@ public class WorldTest
         for (int i = 0; i < count; i++)
         {
             Entity entity = world.CreateEntity(i);
-            world.Add(entity, 'c');
+            world.AddComponent(entity, 'c');
             yield return (world, entity, count-i);
         }
+    }
+    [TestMethod]
+    [DynamicData(nameof(AddComponentData), dynamicDataSourceArguments: 1)]
+    [DynamicData(nameof(AddComponentData), dynamicDataSourceArguments: 100)]
+    public void AddComponent<T>(World world, Entity entity, T component)
+    {
+        world.AddComponent(entity, component);
+        T Value = world.GetComponent<T>(entity);
+        Assert.AreEqual(component, Value);
     }
     [TestMethod]
     [DynamicData(nameof(CreateEntityOneComponentData), dynamicDataSourceArguments: 1)]
@@ -54,6 +81,24 @@ public class WorldTest
     {
         T value = world.GetComponent<T>(entity);
         Assert.AreEqual(num, value);
+    }
+    [TestMethod]
+    [DynamicData(nameof(SetComponentTwoComponentData), dynamicDataSourceArguments: 1)]
+    [DynamicData(nameof(SetComponentTwoComponentData), dynamicDataSourceArguments: 100)]
+    public void RemoveComponent<T>(World world, Entity entity, T component)
+    {
+        ArchetypeId prevArchetypeId = entity.ArchetypeId;
+        world.RemoveComponent<T>(entity);
+        ArchetypeId currentArchetypeId = entity.ArchetypeId;
+        Assert.AreNotEqual(prevArchetypeId, currentArchetypeId);
+    }
+    [TestMethod]
+    [DynamicData(nameof(RemoveEntityData), dynamicDataSourceArguments: 1)]
+    [DynamicData(nameof(RemoveEntityData), dynamicDataSourceArguments: 100)]
+    public void RemoveEntity(World world, Entity entity)
+    {
+        world.RemoveEntity(entity);
+        Assert.AreEqual(default, entity);
     }
     [TestMethod]
     [DynamicData(nameof(SetComponentOneComponentData), dynamicDataSourceArguments: 1)]

@@ -8,7 +8,7 @@ public partial class World
         ArchetypeEntityCount = entityCount;
         Archetypes = new(5);
     }
-    public void Add<T>(Entity entity, T component)
+    public void AddComponent<T>(Entity entity, T component)
     {
         ArchetypeId currentArchetypeId = entity.ArchetypeId;
         ArchetypeId targetArchetypeId = new (currentArchetypeId, Component<T>.BitwiseId);
@@ -43,11 +43,6 @@ public partial class World
         components = [.. components, new (){ Id = Component<T>.Id, Components = new T[ArchetypeEntityCount] }];
         return components;
     }
-    // private static Entity CreateEntity(in ArchetypeId archetypeId)
-    // {
-    //     Entity entity = new (IdGenerator.NextId, archetypeId);
-    //     return entity;
-    // }
     private bool GetArchetype(in ArchetypeId archetypeId, out ArchetypeBuffer archetypeBuffer)
     {
         for (int i = 0; i < Archetypes.Length; i++)
@@ -61,21 +56,6 @@ public partial class World
         archetypeBuffer = default;
         return false;
     }
-    // public Archetype[] GetArchetypes(params int[] componentIds)
-    // {
-    //     List<Archetype> archetypes = [];
-    //     foreach (Archetype archetypeBuffer in Archetypes)
-    //     {
-    //         foreach (int id in componentIds)
-    //         {
-    //             if (!((archetypeBuffer.Id.Id & id) == 0))
-    //             {
-    //                 archetypes.Add(archetypeBuffer);
-    //             }
-    //         }
-    //     }
-    //     return [.. archetypes];
-    // }
     public T GetComponent<T>(in Entity entity)
     {
         if (!GetArchetype(entity.ArchetypeId, out ArchetypeBuffer archetypeBuffer))
