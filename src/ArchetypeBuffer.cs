@@ -1,9 +1,9 @@
 namespace Vecs;
 public ref struct ArchetypeBuffer
 {
-    public ref Archetype Buffer;
+    public ref Archetype Archetype;
     public ArchetypeBuffer(ref Archetype archetype)
     {
-        Buffer = ref archetype;
+        Archetype = ref archetype;
     }
 }

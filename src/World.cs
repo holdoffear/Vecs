@@ -21,7 +21,7 @@ public partial class World
             targetArchetype = new(ref CreateArchetype<T>(currentArchetypeId));
             
         }
-        Transfer(entity, component, currentArchetype.Buffer, targetArchetype.Buffer);
+        Transfer(entity, component, currentArchetype.Archetype, targetArchetype.Archetype);
     }
     private ref Archetype CreateArchetype<T>(in ArchetypeId currentArchetypeId)
     {
@@ -39,7 +39,7 @@ public partial class World
         {
             throw new NotImplementedException();
         }
-        ComponentData[] components = currentArchetype.Buffer.CloneComponents(ArchetypeEntityCount);
+        ComponentData[] components = currentArchetype.Archetype.CloneComponents(ArchetypeEntityCount);
         components = [.. components, new (){ Id = Component<T>.Id, Components = new T[ArchetypeEntityCount] }];
         return components;
     }
@@ -48,29 +48,29 @@ public partial class World
     //     Entity entity = new (IdGenerator.NextId, archetypeId);
     //     return entity;
     // }
-    private bool GetArchetype(in ArchetypeId archetypeId, out ArchetypeBuffer archetype)
+    private bool GetArchetype(in ArchetypeId archetypeId, out ArchetypeBuffer archetypeBuffer)
     {
         for (int i = 0; i < Archetypes.Length; i++)
         {
             if (archetypeId.Id == Archetypes[i].ArchetypeId.Id)
             {
-                archetype.Buffer = ref Archetypes[i];
+                archetypeBuffer.Archetype = ref Archetypes[i];
                 return true;
             }
         }
-        archetype = default;
+        archetypeBuffer = default;
         return false;
     }
     // public Archetype[] GetArchetypes(params int[] componentIds)
     // {
     //     List<Archetype> archetypes = [];
-    //     foreach (Archetype archetype in Archetypes)
+    //     foreach (Archetype archetypeBuffer in Archetypes)
     //     {
     //         foreach (int id in componentIds)
     //         {
-    //             if (!((archetype.Id.Id & id) == 0))
+    //             if (!((archetypeBuffer.Id.Id & id) == 0))
     //             {
-    //                 archetypes.Add(archetype);
+    //                 archetypes.Add(archetypeBuffer);
     //             }
     //         }
     //     }
@@ -78,11 +78,11 @@ public partial class World
     // }
     public T GetComponent<T>(in Entity entity)
     {
-        if (!GetArchetype(entity.ArchetypeId, out ArchetypeBuffer archetype))
+        if (!GetArchetype(entity.ArchetypeId, out ArchetypeBuffer archetypeBuffer))
         {
             throw new NotImplementedException();
         }
-        return archetype.Buffer.Get<T>(entity);
+        return archetypeBuffer.Archetype.Get<T>(entity);
     }
     private void RemoveArchetype(ArchetypeId archetypeId)
     {
@@ -105,11 +105,11 @@ public partial class World
     }
     public void SetComponent<T>(in Entity entity, T component)
     {
-        if (!GetArchetype(entity.ArchetypeId, out ArchetypeBuffer archetype))
+        if (!GetArchetype(entity.ArchetypeId, out ArchetypeBuffer archetypeBuffer))
         {
             throw new NotImplementedException();
         }
-        archetype.Buffer.Set(entity, component);
+        archetypeBuffer.Archetype.Set(entity, component);
     }
     private void Transfer<T>(Entity entity, T component, Archetype oldArchetype, Archetype newArchetype)
     {
