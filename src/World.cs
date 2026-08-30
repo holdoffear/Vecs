@@ -48,7 +48,7 @@ public partial class World
     //     Entity entity = new (IdGenerator.NextId, archetypeId);
     //     return entity;
     // }
-    public bool GetArchetype(in ArchetypeId archetypeId, out Archetype archetype)
+    private bool GetArchetype(in ArchetypeId archetypeId, out Archetype archetype)
     {
         // foreach (Archetype arch in Archetypes)
         // {
@@ -92,7 +92,7 @@ public partial class World
         }
         return archetype.Get<T>(entity);
     }
-    public void RemoveArchetype(ArchetypeId archetypeId)
+    private void RemoveArchetype(ArchetypeId archetypeId)
     {
         for (int i = 0; i < Archetypes.Length; i++)
         {
