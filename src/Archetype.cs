@@ -1,13 +1,13 @@
 namespace Vecs;
 public struct Archetype
 {
-    public readonly ArchetypeId Id = new(-1);
+    public readonly ArchetypeId ArchetypeId = new(-1);
     public Entity[] Entities = [];
     public ComponentData[] Components = [];
     public int NextIndex = 0;
     public Archetype(ArchetypeId archetypeId, int count, ComponentData[] components)
     {
-        Id = archetypeId;
+        ArchetypeId = archetypeId;
         Entities = new Entity[count];
         Components = components;
     }
@@ -27,7 +27,7 @@ public struct Archetype
     }
     public ref Entity CreateEntity()
     {
-        Entities[NextIndex] = new(IdGenerator.NextId, Id, NextIndex);
+        Entities[NextIndex] = new(IdGenerator.NextId, ArchetypeId, NextIndex);
         return ref Entities[NextIndex++];
     }
     public ref T Get<T>(Entity entity) => ref GetComponents<T>()[entity.Index];
