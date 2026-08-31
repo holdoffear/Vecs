@@ -50,6 +50,10 @@ public partial class World
         archetypeBuffer = default;
         return false;
     }
+    public Archetype[] GetArchetypes(int getBits, int withBits, int excludeBits)
+    {
+        throw new NotImplementedException();
+    }
     public T GetComponent<T>(in Entity entity)
     {
         if (!GetArchetype(entity.ArchetypeId, out ArchetypeBuffer archetypeBuffer))
