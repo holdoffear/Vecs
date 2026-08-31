@@ -98,7 +98,7 @@ public class WorldTest
     public void RemoveComponent<T>(World world, Entity entity, T component)
     {
         ArchetypeId prevArchetypeId = entity.ArchetypeId;
-        world.RemoveComponent<T>(entity);
+        world.RemoveComponent<T>(ref entity);
         ArchetypeId currentArchetypeId = entity.ArchetypeId;
         Assert.AreNotEqual(prevArchetypeId, currentArchetypeId);
     }

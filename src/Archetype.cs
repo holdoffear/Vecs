@@ -72,7 +72,7 @@ public struct Archetype
     public void Remove(in Entity entity) => RemoveAt(entity.Index);
     private void RemoveAt(int index)
     {
-        int lastIndex = NextIndex-1;
+        int lastIndex = NextIndex == 0 ? 0 : NextIndex-1;
         foreach (ComponentData componentData in Components)
         {
             Array.Copy(componentData.Components, lastIndex, componentData.Components, index, 1);
@@ -100,7 +100,6 @@ public struct Archetype
             if (otherArchetype.GetComponents(component.Id, out ComponentData otherComponent))
             {
                 otherComponent.Set(otherIndex, component.Get(currentIndex));
-                // otherComponent[otherIndex] = Components[currentIndex];
             }
         }
         RemoveAt(currentIndex);
