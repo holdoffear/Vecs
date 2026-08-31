@@ -8,39 +8,33 @@ public partial class World
         ArchetypeEntityCount = entityCount;
         Archetypes = new(5);
     }
-    public void AddComponent<T>(Entity entity, T component)
+    public void AddComponent<T>(ref Entity entity, in T component)
     {
         ArchetypeId currentArchetypeId = entity.ArchetypeId;
-        ArchetypeId targetArchetypeId = new (currentArchetypeId, Component<T>.BitwiseId);
+        ArchetypeId targetArchetypeId = new(currentArchetypeId, Component<T>.BitwiseId);
         if (!GetArchetype(currentArchetypeId, out ArchetypeBuffer currentArchetype))
         {
             throw new NotImplementedException();
         }
         if (!GetArchetype(targetArchetypeId, out ArchetypeBuffer targetArchetype))
         {
-            targetArchetype = new(ref CreateArchetype<T>(currentArchetypeId));
-            
+            targetArchetype = new(ref CreateArchetype(targetArchetypeId, CreateComponents<T>(currentArchetypeId)));
         }
-        Transfer(entity, component, currentArchetype.Archetype, targetArchetype.Archetype);
-    }
-    private ref Archetype CreateArchetype<T>(in ArchetypeId currentArchetypeId)
-    {
-        ArchetypeId targetArchetypeId = new (currentArchetypeId, Component<T>.BitwiseId);
-        return ref CreateArchetype(targetArchetypeId, CreateComponents<T>(currentArchetypeId));
+        Transfer(ref entity, component, currentArchetype.Archetype, targetArchetype.Archetype);
     }
     private ref Archetype CreateArchetype(ArchetypeId archetypeId, ComponentData[] components)
     {
         Archetypes.Add(new Archetype(archetypeId, ArchetypeEntityCount, components));
         return ref Archetypes[^1];
     }
-    private ComponentData[] CreateComponents<T>(ArchetypeId currentArchetypeId)
+    private ComponentData[] CreateComponents<T>(in ArchetypeId currentArchetypeId)
     {
         if (!GetArchetype(currentArchetypeId, out ArchetypeBuffer currentArchetype))
         {
             throw new NotImplementedException();
         }
         ComponentData[] components = currentArchetype.Archetype.CloneComponents(ArchetypeEntityCount);
-        components = [.. components, new (){ Id = Component<T>.Id, Components = new T[ArchetypeEntityCount] }];
+        components = [.. components, new (Component<T>.Id, new T[ArchetypeEntityCount])];
         return components;
     }
     private bool GetArchetype(in ArchetypeId archetypeId, out ArchetypeBuffer archetypeBuffer)
@@ -91,10 +85,10 @@ public partial class World
         }
         archetypeBuffer.Archetype.Set(entity, component);
     }
-    private void Transfer<T>(Entity entity, T component, Archetype oldArchetype, Archetype newArchetype)
+    private void Transfer<T>(ref Entity entity, in T component, in Archetype oldArchetype, in Archetype newArchetype)
     {
-        oldArchetype.Transfer(entity, newArchetype);
+        oldArchetype.Transfer(ref entity, newArchetype);
         newArchetype.Set(entity, component);
-        entity.ArchetypeId = newArchetype.ArchetypeId;
+        // entity.ArchetypeId = newArchetype.ArchetypeId;
     }
 }

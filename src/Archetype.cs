@@ -16,6 +16,13 @@ public struct Archetype
     //     Entities[NextIndex] = entity;
     //     Entities[NextIndex].Index = NextIndex++;
     // }
+    public ref Entity AddEntity(ref Entity entity)
+    {
+        entity.ArchetypeId = ArchetypeId;
+        entity.Index = NextIndex;
+        Entities[NextIndex++] = entity;
+        return ref entity;
+    }
     public ComponentData[] CloneComponents(int count)
     {
         ComponentData[] newComponents = new ComponentData[Components.Length];
@@ -76,11 +83,11 @@ public struct Archetype
         T[] components = GetComponents<T>();
         components[entity.Index] = component;
     }
-    public void Transfer(in Entity entity, in Archetype otherArchetype)
+    public void Transfer(ref Entity entity, in Archetype otherArchetype)
     {
-        Entity otherEntity = otherArchetype.CreateEntity();
-        int otherIndex = entity.Index;
         int currentIndex = entity.Index;
+        otherArchetype.AddEntity(ref entity);
+        int otherIndex = entity.Index;
         foreach (ComponentData component in Components)
         {
             if (otherArchetype.GetComponents(component.Id, out ComponentData otherComponent))
@@ -89,6 +96,6 @@ public struct Archetype
                 // otherComponent[otherIndex] = Components[currentIndex];
             }
         }
-        Remove(entity);
+        RemoveAt(currentIndex);
     }
 }

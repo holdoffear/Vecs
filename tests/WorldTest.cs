@@ -52,7 +52,7 @@ public class WorldTest
         for (int i = 0; i < count; i++)
         {
             Entity entity = world.CreateEntity(i);
-            world.AddComponent(entity, 'c');
+            world.AddComponent(ref entity, 'c');
             yield return (world, entity, count-i);
         }
     }
@@ -61,7 +61,7 @@ public class WorldTest
     [DynamicData(nameof(AddComponentData), dynamicDataSourceArguments: 100)]
     public void AddComponent<T>(World world, Entity entity, T component)
     {
-        world.AddComponent(entity, component);
+        world.AddComponent(ref entity, component);
         T Value = world.GetComponent<T>(entity);
         Assert.AreEqual(component, Value);
     }
@@ -73,6 +73,16 @@ public class WorldTest
         Entity entity = world.CreateEntity(component);
         T value = world.GetComponent<T>(entity);
         Assert.AreEqual(component, value);
+    }
+    [TestMethod]
+    [DynamicData(nameof(AddComponentData), dynamicDataSourceArguments: 1)]
+    [DynamicData(nameof(AddComponentData), dynamicDataSourceArguments: 100)]
+    public void EntityArchetypeId<T>(World world, Entity entity, T component)
+    {
+        ArchetypeId archetypeId = entity.ArchetypeId;
+        world.AddComponent(ref entity, component);
+        ArchetypeId expectedArchetypeId = entity.ArchetypeId;
+        Assert.AreNotEqual(archetypeId.Id, expectedArchetypeId.Id);
     }
     [TestMethod]
     [DynamicData(nameof(GetComponentOneComponentData), dynamicDataSourceArguments: 1)]
