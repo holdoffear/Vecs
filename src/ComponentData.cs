@@ -11,8 +11,7 @@ public struct ComponentData
     public ComponentData(ComponentData old, int count)
     {
         Type type = old.Components.GetType();
-        Array array = Array.CreateInstanceFromArrayType(type, count);
-        Components = array;
+        Components = Array.CreateInstanceFromArrayType(type, count);
         Id = old.Id;
     }
     // public object? this[int index]
