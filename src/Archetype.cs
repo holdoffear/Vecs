@@ -32,6 +32,15 @@ public struct Archetype
         }
         return newComponents;
     }
+    public bool Contains(in Entity entity)
+    {
+        int index = entity.Index;
+        if (index < NextIndex)
+        {
+            return Entities[index].Id == entity.Id;
+        }
+        return false;
+    }
     public ref Entity CreateEntity()
     {
         Entities[NextIndex] = new(IdGenerator.NextId, ArchetypeId, NextIndex);

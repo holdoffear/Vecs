@@ -108,7 +108,7 @@ public class WorldTest
     public void RemoveEntity(World world, Entity entity)
     {
         world.RemoveEntity(entity);
-        Assert.AreEqual(default, entity);
+        Assert.IsFalse(world.IsValid(entity));
     }
     [TestMethod]
     [DynamicData(nameof(SetComponentOneComponentData), dynamicDataSourceArguments: 1)]

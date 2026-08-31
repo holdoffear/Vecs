@@ -58,6 +58,14 @@ public partial class World
         }
         return archetypeBuffer.Archetype.Get<T>(entity);
     }
+    public bool IsValid(in Entity entity)
+    {
+        if (!GetArchetype(entity.ArchetypeId, out ArchetypeBuffer archetypeBuffer))
+        {
+            throw new NotImplementedException();
+        }
+        return archetypeBuffer.Archetype.Contains(entity);
+    }
     private void RemoveArchetype(ArchetypeId archetypeId)
     {
         for (int i = 0; i < Archetypes.Length; i++)
