@@ -69,13 +69,17 @@ public partial class World
             }
         }
     }
-    public void RemoveComponent<T>(Entity entity)
+    public void RemoveComponent<T>(in Entity entity)
     {
         throw new NotImplementedException();
     }
-    public void RemoveEntity(Entity entity)
+    public void RemoveEntity(in Entity entity)
     {
-        throw new NotImplementedException();
+        if (!GetArchetype(entity.ArchetypeId, out ArchetypeBuffer archetypeBuffer))
+        {
+            throw new NotImplementedException();
+        }
+        archetypeBuffer.Archetype.Remove(entity);
     }
     public void SetComponent<T>(in Entity entity, T component)
     {

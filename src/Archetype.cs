@@ -60,11 +60,7 @@ public struct Archetype
         return false;
     }
     public Span<T> GetComponentsAsSpan<T>() => new(GetComponents<T>(), 0, NextIndex);
-    public void Remove(Entity entity)
-    {
-        RemoveAt(entity.Index);
-        NextIndex--;
-    }
+    public void Remove(in Entity entity) => RemoveAt(entity.Index);
     private void RemoveAt(int index)
     {
         int lastIndex = NextIndex-1;
@@ -72,6 +68,8 @@ public struct Archetype
         {
             Array.Copy(componentData.Components, lastIndex, componentData.Components, index, 1);
         }
+        Entities[index] = Entities[lastIndex];
+        NextIndex--;
     }
     public void Set<T>(int index, in T component)
     {
