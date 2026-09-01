@@ -13,7 +13,7 @@ public partial class World
         archetypeBuffer.Archetype.Set(entity, componentA);
         return entity;
     }
-    public Entity CreateEntity<T1, T2, T3>(T1 componentA, T2 componentB)
+    public Entity CreateEntity<T1, T2>(T1 componentA, T2 componentB)
     {
         ArchetypeId archetypeId = new(Component<T1>.BitwiseId | Component<T2>.BitwiseId);
         if (!GetArchetype(archetypeId, out ArchetypeBuffer archetypeBuffer))
