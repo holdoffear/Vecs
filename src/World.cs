@@ -37,6 +37,7 @@ public partial class World
         components = [.. components, new (Component<T>.Id, new T[ArchetypeEntityCount])];
         return components;
     }
+    public Query CreateQuery() => new(this);
     private bool GetArchetype(in ArchetypeId archetypeId, out ArchetypeBuffer archetypeBuffer)
     {
         for (int i = 0; i < Archetypes.Length; i++)
@@ -52,7 +53,16 @@ public partial class World
     }
     public Archetype[] GetArchetypes(int getBits, int withBits, int excludeBits)
     {
-        throw new NotImplementedException();
+        List<Archetype> archetypes = [];
+        for (int i = 0; i < Archetypes.Length; i++)
+        {
+            ref Archetype archetype = ref Archetypes[i];
+            if ((archetype.ArchetypeId.Id & (getBits | withBits)) > 0 && (archetype.ArchetypeId.Id & excludeBits) < 1)
+            {
+                archetypes.Add(archetype);
+            }
+        }
+        return [..archetypes];
     }
     public T GetComponent<T>(in Entity entity)
     {
