@@ -5,8 +5,10 @@
 ![showcase](docs/img/Showcase.gif)
 
 Vecs is an Entity Component System written in C# that aims to be performant.
-- Makes use of Archetypes to handle association of entities to components
-- Component data is stored contiguously in memory making it cache friendly
+- Makes use of Archetypes to handle grouping of entities that share the same set of components.
+- Uses a Query to access entity component data as a packed array.
+- Component data is stored contiguously in memory making it cache friendly.
+- Components are of type struct.
 
 # Example
 ```csharp
@@ -20,7 +22,6 @@ query.Foreach<Velocity>((ref Velocity velocity) =>
 {
     velocity.Value = 1;
 });
-
 
 struct Velocity
 {
