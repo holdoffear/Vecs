@@ -57,7 +57,11 @@ public partial class World
         for (int i = 0; i < Archetypes.Length; i++)
         {
             ref Archetype archetype = ref Archetypes[i];
-            if ((archetype.ArchetypeId.Id & (getBits | withBits)) > 0 && (archetype.ArchetypeId.Id & excludeBits) < 1)
+            if (
+                (archetype.ArchetypeId.Id & getBits) == getBits
+                && ((archetype.ArchetypeId.Id & withBits) != 0 || withBits == 0)
+                && (archetype.ArchetypeId.Id & excludeBits) == 0
+            )
             {
                 archetypes.Add(archetype);
             }
