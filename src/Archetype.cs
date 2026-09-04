@@ -13,8 +13,9 @@ public struct Archetype
     }
     public ref Entity AddEntity(ref Entity entity)
     {
-        entity.ArchetypeId = ArchetypeId;
-        entity.Index = NextIndex;
+        entity = new(entity.Id, ArchetypeId, NextIndex);
+        // entity.ArchetypeId = ArchetypeId;
+        // entity.Index = NextIndex;
         Entities[NextIndex++] = entity;
         return ref entity;
     }
@@ -63,8 +64,8 @@ public struct Archetype
         componentData = default;
         return false;
     }
-    public Span<Entity> GetEntitiesAsSpan() => new(Entities, 0, NextIndex);
     public Span<T> GetComponentsAsSpan<T>() => new(GetComponents<T>(), 0, NextIndex);
+    public Span<Entity> GetEntitiesAsSpan() => new(Entities, 0, NextIndex);
     public void Remove(in Entity entity) => RemoveAt(entity.Index);
     private void RemoveAt(int index)
     {
@@ -75,11 +76,6 @@ public struct Archetype
         }
         Entities[index] = Entities[lastIndex];
         NextIndex--;
-    }
-    public void Set<T>(int index, in T component)
-    {
-        T[] components = GetComponents<T>();
-        components[index] = component;
     }
     public void Set<T>(in Entity entity, in T component)
     {
