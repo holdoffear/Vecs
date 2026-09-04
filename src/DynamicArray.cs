@@ -1,5 +1,4 @@
-using System.Collections;
-public struct DynamicArray<T> : IEnumerable<T>
+public struct DynamicArray<T>
 where T : struct
 {
     private int NextIndex = 0;
@@ -40,14 +39,6 @@ where T : struct
         }
     }
     public Span<T> AsSpan() => new(Data, 0, Length);
-    public IEnumerator<T> GetEnumerator()
-    {
-        foreach (T element in Data)
-        {
-            yield return element;
-        }
-    }
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     public void Remove(int index)
     {
         if (NextIndex > 0)
