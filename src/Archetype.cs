@@ -11,11 +11,6 @@ public struct Archetype
         Entities = new Entity[count];
         Components = components;
     }
-    // public void Add(in Entity entity)
-    // {
-    //     Entities[NextIndex] = entity;
-    //     Entities[NextIndex].Index = NextIndex++;
-    // }
     public ref Entity AddEntity(ref Entity entity)
     {
         entity.ArchetypeId = ArchetypeId;
