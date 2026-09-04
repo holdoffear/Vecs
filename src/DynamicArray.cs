@@ -46,14 +46,11 @@ where T : struct
             Data[index] = Data[--NextIndex];
         }
     }
-    public void Resize()
+    private void Resize() => Resize(Size*2);
+    private void Resize(int newSize)
     {
-        Size *= 2;
+        Size = newSize;
         Array.Resize(ref Data, Size);
     }
-    public void Shrink()
-    {
-        Size = NextIndex;
-        Array.Resize(ref Data, Size);
-    }
+    public void Shrink() => Resize(NextIndex);
 }
