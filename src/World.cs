@@ -29,22 +29,23 @@ public partial class World
     }
     private ComponentData[] CreateComponents<T>(in ArchetypeId currentArchetypeId)
     {
-        if (!GetArchetype(currentArchetypeId, out ArchetypeBuffer currentArchetype))
+        if (GetArchetype(currentArchetypeId, out ArchetypeBuffer currentArchetype))
         {
-            throw new NotImplementedException();
+            ComponentData[] components = currentArchetype.Archetype.CloneComponents(ArchetypeEntityCount);
+            components = [.. components, new (Component<T>.Id, new T[ArchetypeEntityCount])];
+            return components;
         }
-        ComponentData[] components = currentArchetype.Archetype.CloneComponents(ArchetypeEntityCount);
-        components = [.. components, new (Component<T>.Id, new T[ArchetypeEntityCount])];
-        return components;
+        throw new NotImplementedException();
     }
     public Query CreateQuery() => new(this);
     private bool GetArchetype(in ArchetypeId archetypeId, out ArchetypeBuffer archetypeBuffer)
     {
-        for (int i = 0; i < Archetypes.Length; i++)
+        Span<Archetype> archetypes = Archetypes.AsSpan();
+        for (int i = 0; i < archetypes.Length; i++)
         {
-            if (archetypeId.Id == Archetypes[i].ArchetypeId.Id)
+            if (archetypeId.Id == archetypes[i].ArchetypeId.Id)
             {
-                archetypeBuffer.Archetype = ref Archetypes[i];
+                archetypeBuffer.Archetype = ref archetypes[i];
                 return true;
             }
         }
@@ -54,9 +55,10 @@ public partial class World
     public Archetype[] GetArchetypes(int getBits, int withBits, int excludeBits)
     {
         List<Archetype> archetypes = [];
-        for (int i = 0; i < Archetypes.Length; i++)
+        Span<Archetype> archetypesSpan = Archetypes.AsSpan();
+        for (int i = 0; i < archetypesSpan.Length; i++)
         {
-            ref Archetype archetype = ref Archetypes[i];
+            ref Archetype archetype = ref archetypesSpan[i];
             if (
                 (archetype.ArchetypeId.Id & getBits) == getBits
                 && ((archetype.ArchetypeId.Id & withBits) != 0 || withBits == 0)
@@ -70,31 +72,31 @@ public partial class World
     }
     public T GetComponent<T>(in Entity entity)
     {
-        if (!GetArchetype(entity.ArchetypeId, out ArchetypeBuffer archetypeBuffer))
+        if (GetArchetype(entity.ArchetypeId, out ArchetypeBuffer archetypeBuffer))
         {
-            throw new NotImplementedException();
+            return archetypeBuffer.Archetype.Get<T>(entity);
         }
-        return archetypeBuffer.Archetype.Get<T>(entity);
+        throw new NotImplementedException();
     }
     public bool IsValid(in Entity entity)
     {
-        if (!GetArchetype(entity.ArchetypeId, out ArchetypeBuffer archetypeBuffer))
+        if (GetArchetype(entity.ArchetypeId, out ArchetypeBuffer archetypeBuffer))
         {
-            throw new NotImplementedException();
+            return archetypeBuffer.Archetype.Contains(entity);
         }
-        return archetypeBuffer.Archetype.Contains(entity);
+        throw new NotImplementedException();
     }
-    private void RemoveArchetype(ArchetypeId archetypeId)
-    {
-        for (int i = 0; i < Archetypes.Length; i++)
-        {
-            if (archetypeId.Id == Archetypes[i].ArchetypeId.Id)
-            {
-                Archetypes.Remove(i);
-                break;
-            }
-        }
-    }
+    // private void RemoveArchetype(ArchetypeId archetypeId)
+    // {
+    //     for (int i = 0; i < Archetypes.Length; i++)
+    //     {
+    //         if (archetypeId.Id == Archetypes[i].ArchetypeId.Id)
+    //         {
+    //             Archetypes.Remove(i);
+    //             break;
+    //         }
+    //     }
+    // }
     public void RemoveComponent<T>(ref Entity entity)
     {
         ArchetypeId currentArchetypeId = entity.ArchetypeId;
