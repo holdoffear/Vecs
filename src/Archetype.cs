@@ -45,11 +45,11 @@ public struct Archetype
     public ref T Get<T>(Entity entity) => ref GetComponents<T>()[entity.Index];
     public T[] GetComponents<T>()
     {
-        if (!GetComponents(Component<T>.Id, out ComponentData componentData))
+        if (GetComponents(Component<T>.Id, out ComponentData componentData))
         {
-            return [];
+            return componentData.GetComponents<T>();
         }
-        return componentData.GetComponents<T>();
+        return [];
     }
     private bool GetComponents(int id, out ComponentData componentData)
     {
