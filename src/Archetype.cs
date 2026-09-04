@@ -47,7 +47,7 @@ public struct Archetype
     {
         if (!GetComponents(Component<T>.Id, out ComponentData componentData))
         {
-            throw new NotImplementedException();
+            return [];
         }
         return componentData.GetComponents<T>();
     }
