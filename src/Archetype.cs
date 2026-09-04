@@ -14,8 +14,6 @@ public struct Archetype
     public ref Entity AddEntity(ref Entity entity)
     {
         entity = new(entity.Id, ArchetypeId, NextIndex);
-        // entity.ArchetypeId = ArchetypeId;
-        // entity.Index = NextIndex;
         Entities[NextIndex++] = entity;
         return ref entity;
     }
