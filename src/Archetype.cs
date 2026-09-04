@@ -68,6 +68,7 @@ public struct Archetype
         componentData = default;
         return false;
     }
+    public Span<Entity> GetEntitiesAsSpan() => new(Entities, 0, NextIndex);
     public Span<T> GetComponentsAsSpan<T>() => new(GetComponents<T>(), 0, NextIndex);
     public void Remove(in Entity entity) => RemoveAt(entity.Index);
     private void RemoveAt(int index)
