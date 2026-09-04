@@ -3,7 +3,7 @@ public partial class World
 {
     private int ArchetypeEntityCount;
     private DynamicArray<Archetype> Archetypes;
-    public World(int entityCount)
+    public World(int entityCount = 1000)
     {
         ArchetypeEntityCount = entityCount;
         Archetypes = new(5);
