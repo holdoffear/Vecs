@@ -1,3 +1,5 @@
+using System.Collections;
+
 namespace Vecs;
 public struct ComponentData
 {
@@ -16,5 +18,12 @@ public struct ComponentData
     }
     public T[] GetComponents<T>() => (T[])Components;
     public object? Get(int index) => Components.GetValue(index);
+    public void Resize(int size)
+    {
+        Type type = Components.GetType();
+        Array array = Array.CreateInstanceFromArrayType(type, size);
+        Array.Copy(Components, array, Math.Min(array.Length, Components.Length));
+        Components = array;
+    }
     public void Set(int index, object? component) => Components.SetValue(component, index);
 }
