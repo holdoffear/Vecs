@@ -11,16 +11,25 @@ where T : struct
     }
     public DynamicArray(int count)
     {
+        count = count < 1 ? 1 : count;
         Data = new T[count];
         Size = Data.Length;
     }
     public ref T this[int index]
     {
-        get => ref Data[index];
+        // get => ref Data[index];
+        get
+        {
+            if ((uint)index < (uint)NextIndex)
+            {
+                return ref Data[index];
+            }
+            throw new IndexOutOfRangeException($"Index: {index}, Array Length: {Length}");
+        }
     }
     public void Add(T element)
     {
-        if (NextIndex < Size)
+        if ((uint)NextIndex < (uint)Size)
         {
             Data[NextIndex++] = element;
         }
@@ -49,7 +58,7 @@ where T : struct
     private void Resize() => Resize(Size*2);
     private void Resize(int newSize)
     {
-        Size = newSize;
+        Size = newSize == 0 ? 1 : newSize;
         Array.Resize(ref Data, Size);
     }
     public void Shrink() => Resize(NextIndex);
