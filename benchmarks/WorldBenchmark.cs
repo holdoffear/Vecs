@@ -4,21 +4,6 @@ public class WorldBenchmark
 {
     [Params(100)]
     public int Count;
-    // private World World;
-    // public WorldBenchmark()
-    // {
-    //     World = new(100000);
-    // }
-    // public WorldBenchmark(int count)
-    // {
-    //     Count = count;
-    //     World = new(Count);
-    // }
-    [GlobalSetup]
-    // public void Setup()
-    // {
-    //     World = new(Count);
-    // }
     // [Benchmark]
     // public void AddComponent()
     // {
