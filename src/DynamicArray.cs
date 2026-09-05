@@ -39,6 +39,21 @@ where T : struct
         }
     }
     public Span<T> AsSpan() => new(Data, 0, Length);
+    // public bool Find<T1>(in T1 element, out T value) where T1 : IEqualityOperators<T1, T, bool> => Find(element, Data, out value);
+    // public static bool Find<T1>(in T1 element, T[] Data, out T value) where T1 : IEqualityOperators<T1, T, bool>
+    // {
+    //     for (int i = 0; i < Data.Length; i++)
+    //     {
+    //         ref T data = ref Data[i];
+    //         if (element == data)
+    //         {
+    //             value = data;
+    //             return true;
+    //         }
+    //     }
+    //     value = default;
+    //     return false;
+    // }
     public void Remove(int index)
     {
         if (NextIndex > 0)
