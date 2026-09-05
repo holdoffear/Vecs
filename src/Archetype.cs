@@ -7,6 +7,7 @@ public struct Archetype
     public int NextIndex = 0;
     public Archetype(ArchetypeId archetypeId, int count, ComponentData[] components)
     {
+        count = count < 1 ? 1 : count;
         ArchetypeId = archetypeId;
         Entities = new Entity[count];
         Components = components;
@@ -37,7 +38,15 @@ public struct Archetype
     }
     public ref Entity CreateEntity()
     {
-        Entities[NextIndex] = new(IdGenerator.NextId, ArchetypeId, NextIndex);
+        if (NextIndex < Entities.Length)
+        {
+            Entities[NextIndex] = new(IdGenerator.NextId, ArchetypeId, NextIndex);
+        }
+        else
+        {
+            Resize();
+            Entities[NextIndex] = new(IdGenerator.NextId, ArchetypeId, NextIndex);
+        }
         return ref Entities[NextIndex++];
     }
     public ref T Get<T>(Entity entity) => ref GetComponents<T>()[entity.Index];
@@ -75,11 +84,21 @@ public struct Archetype
         Entities[index] = Entities[lastIndex];
         NextIndex--;
     }
+    private void Resize() => Resize(Entities.Length*2);
+    private void Resize(int newSize)
+    {
+        Array.Resize(ref Entities, newSize);
+        for (int i = 0; i < Components.Length; i++)
+        {
+            Components[i].Resize(newSize);
+        }
+    }
     public void Set<T>(in Entity entity, in T component)
     {
         T[] components = GetComponents<T>();
         components[entity.Index] = component;
     }
+    public void Shrink() => Resize(NextIndex);
     public void Transfer(ref Entity entity, in Archetype otherArchetype)
     {
         int currentIndex = entity.Index;
