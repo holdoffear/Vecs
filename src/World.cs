@@ -127,6 +127,14 @@ public partial class World
         }
         archetypeBuffer.Archetype.Set(entity, component);
     }
+    public void Shrink()
+    {
+        Span<Archetype> archetypes = Archetypes.AsSpan();
+        for (int i = 0; i < archetypes.Length; i++)
+        {
+            archetypes[i].Shrink();
+        }
+    }
     private void Transfer<T>(ref Entity entity, in T component, in Archetype oldArchetype, in Archetype newArchetype)
     {
         oldArchetype.Transfer(ref entity, newArchetype);
