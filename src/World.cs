@@ -52,18 +52,14 @@ public partial class World
         archetypeBuffer = default;
         return false;
     }
-    public Archetype[] GetArchetypes(int getBits, int withBits, int excludeBits)
+    public Archetype[] GetArchetypes(int getBits, int excludeBits)
     {
         List<Archetype> archetypes = [];
         Span<Archetype> archetypesSpan = Archetypes.AsSpan();
         for (int i = 0; i < archetypesSpan.Length; i++)
         {
             ref Archetype archetype = ref archetypesSpan[i];
-            if (
-                (archetype.ArchetypeId.Id & getBits) == getBits
-                && ((archetype.ArchetypeId.Id & withBits) != 0 || withBits == 0)
-                && (archetype.ArchetypeId.Id & excludeBits) == 0
-            )
+            if ((archetype.ArchetypeId.Id & getBits) == getBits && (archetype.ArchetypeId.Id & excludeBits) == 0)
             {
                 archetypes.Add(archetype);
             }
