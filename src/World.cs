@@ -32,7 +32,8 @@ public partial class World
         if (GetArchetype(currentArchetypeId, out ArchetypeBuffer currentArchetype))
         {
             ComponentData[] components = currentArchetype.Archetype.CloneComponents(ArchetypeEntityCount);
-            components = [.. components, new (Component<T>.Id, new T[ArchetypeEntityCount])];
+            ComponentId componentId = Component<T>.GetComponentId();
+            components = [.. components, new (componentId, new T[ArchetypeEntityCount])];
             return components;
         }
         throw new NotImplementedException();

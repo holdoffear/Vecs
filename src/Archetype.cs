@@ -54,17 +54,18 @@ public struct Archetype : IEquatable<Archetype>
     public ref T Get<T>(Entity entity) => ref GetComponents<T>()[entity.Index];
     public T[] GetComponents<T>()
     {
-        if (GetComponents(Component<T>.Id, out ComponentData componentData))
+        ComponentId componentId = Component<T>.GetComponentId();;
+        if (GetComponents(componentId, out ComponentData componentData))
         {
             return componentData.GetComponents<T>();
         }
         return [];
     }
-    private bool GetComponents(int id, out ComponentData componentData)
+    private bool GetComponents(ComponentId componentId, out ComponentData componentData)
     {
         foreach (ComponentData component in Components)
         {
-            if (id == component.Id)
+            if (componentId == component.ComponentId)
             {
                 componentData = component;
                 return true;
@@ -109,7 +110,7 @@ public struct Archetype : IEquatable<Archetype>
         int otherIndex = entity.Index;
         foreach (ComponentData component in Components)
         {
-            if (otherArchetype.GetComponents(component.Id, out ComponentData otherComponent))
+            if (otherArchetype.GetComponents(component.ComponentId, out ComponentData otherComponent))
             {
                 otherComponent.Set(otherIndex, component.Get(currentIndex));
             }

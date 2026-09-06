@@ -3,18 +3,18 @@ using System.Collections;
 namespace Vecs;
 public struct ComponentData
 {
-    public int Id;
+    public ComponentId ComponentId;
     public Array Components;
-    public ComponentData(int id, Array array)
+    public ComponentData(ComponentId componentId, Array array)
     {
-        Id = id;
+        ComponentId = componentId;
         Components = array;
     }
     public ComponentData(ComponentData old, int count)
     {
         Type type = old.Components.GetType();
         Components = Array.CreateInstanceFromArrayType(type, count);
-        Id = old.Id;
+        ComponentId = old.ComponentId;
     }
     public T[] GetComponents<T>() => (T[])Components;
     public object? Get(int index) => Components.GetValue(index);
