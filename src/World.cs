@@ -43,7 +43,7 @@ public partial class World
         Span<Archetype> archetypes = Archetypes.AsSpan();
         for (int i = 0; i < archetypes.Length; i++)
         {
-            if (archetypeId.Id == archetypes[i].ArchetypeId.Id)
+            if (archetypeId == archetypes[i].ArchetypeId)
             {
                 archetypeBuffer.Archetype = ref archetypes[i];
                 return true;
