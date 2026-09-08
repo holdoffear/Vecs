@@ -82,7 +82,7 @@ public class WorldTest
         ArchetypeId archetypeId = entity.ArchetypeId;
         world.AddComponent(ref entity, component);
         ArchetypeId expectedArchetypeId = entity.ArchetypeId;
-        Assert.AreNotEqual(archetypeId.Id, expectedArchetypeId.Id);
+        Assert.AreNotEqual(expectedArchetypeId, archetypeId);
     }
     [TestMethod]
     [DynamicData(nameof(GetComponentOneComponentData), dynamicDataSourceArguments: 1)]
