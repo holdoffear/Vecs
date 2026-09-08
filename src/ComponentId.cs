@@ -10,5 +10,6 @@ public struct ComponentId : IEquatable<ComponentId>
     public bool Equals(ComponentId other) => Id.Equals(other.Id);
     public static bool operator ==(ComponentId left, ComponentId right) => left.Equals(right);
     public static bool operator !=(ComponentId left, ComponentId right) => !left.Equals(right);
+    public static ComponentId operator ~(ComponentId right) => new(~right.Id);
     public override int GetHashCode() => Id.GetHashCode();
 }

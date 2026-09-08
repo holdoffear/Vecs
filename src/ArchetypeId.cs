@@ -26,6 +26,7 @@ public struct ArchetypeId : IEquatable<ArchetypeId>
     public static bool operator ==(ArchetypeId left, ArchetypeId right) => left.Equals(right);
     public static bool operator !=(ArchetypeId left, ArchetypeId right) => !left.Equals(right);
     public static ArchetypeId operator &(ArchetypeId left, ArchetypeId right) => new(left.Id & right.Id);
+    public static ArchetypeId operator &(ArchetypeId left, ComponentId right) => new(left.Id & right.Id);
     public static ArchetypeId operator |(ArchetypeId left, ComponentId right) => new(left.Id | right.Id);
     public static ArchetypeId operator |(ArchetypeId left, ArchetypeId right) => new(left.Id | right.Id);
     public override int GetHashCode() => Id.GetHashCode();

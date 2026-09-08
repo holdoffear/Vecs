@@ -94,20 +94,20 @@ public partial class World
     //         }
     //     }
     // }
-    // public void RemoveComponent<T>(ref Entity entity)
-    // {
-    //     ArchetypeId currentArchetypeId = entity.ArchetypeId;
-    //     ArchetypeId targetArchetypeId = new(currentArchetypeId.Id &~ Component<T>.GetComponentId());
-    //     if (!GetArchetype(currentArchetypeId, out ArchetypeBuffer currentArchetype))
-    //     {
-    //         throw new NotImplementedException();
-    //     }
-    //     if (!GetArchetype(targetArchetypeId, out ArchetypeBuffer targetArchetype))
-    //     {
-    //         targetArchetype = new(ref CreateArchetype(targetArchetypeId, CreateComponents<T>(currentArchetypeId)));
-    //     }
-    //     Transfer(ref entity, currentArchetype.Archetype, targetArchetype.Archetype);
-    // }
+    public void RemoveComponent<T>(ref Entity entity)
+    {
+        ArchetypeId currentArchetypeId = entity.ArchetypeId;
+        ArchetypeId targetArchetypeId = currentArchetypeId &~ Component<T>.GetComponentId();
+        if (!GetArchetype(currentArchetypeId, out ArchetypeBuffer currentArchetype))
+        {
+            throw new NotImplementedException();
+        }
+        if (!GetArchetype(targetArchetypeId, out ArchetypeBuffer targetArchetype))
+        {
+            targetArchetype = new(ref CreateArchetype(targetArchetypeId, CreateComponents<T>(currentArchetypeId)));
+        }
+        Transfer(ref entity, currentArchetype.Archetype, targetArchetype.Archetype);
+    }
     public void RemoveEntity(in Entity entity)
     {
         if (!GetArchetype(entity.ArchetypeId, out ArchetypeBuffer archetypeBuffer))
