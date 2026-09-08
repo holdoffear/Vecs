@@ -27,10 +27,9 @@ public class QueryTest
     [TestMethod]
     [DynamicData(nameof(CreateQueryData), dynamicDataSourceArguments: 1)]
     [DynamicData(nameof(CreateQueryData), dynamicDataSourceArguments: 100)]
-    public void CreateQuery<T>(World world, Entity entity, T num)
+    public void CreateQueryOneComponent<T>(World world, Entity entity, T num)
     {
         Query query = world.CreateQuery();
-        query.Get<T>();
         query.Foreach((ref T component) =>
         {
             component = num;
@@ -41,10 +40,9 @@ public class QueryTest
     [TestMethod]
     [DynamicData(nameof(CreateQueryTwoComponentsData), dynamicDataSourceArguments: 1)]
     [DynamicData(nameof(CreateQueryTwoComponentsData), dynamicDataSourceArguments: 100)]
-    public void CreateQuery<T1, T2>(World world, Entity entity, T1 elementA, T2 elementB)
+    public void CreateQueryTwoComponents<T1, T2>(World world, Entity entity, T1 elementA, T2 elementB)
     {
         Query query = world.CreateQuery();
-        query.Get<T1, T2>();
         query.Foreach((ref T1 componentA, ref T2 componentB) =>
         {
             componentA = elementA;

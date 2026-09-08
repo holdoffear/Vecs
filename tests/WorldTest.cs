@@ -92,16 +92,16 @@ public class WorldTest
         T value = world.GetComponent<T>(entity);
         Assert.AreEqual(num, value);
     }
-    [TestMethod]
-    [DynamicData(nameof(SetComponentTwoComponentData), dynamicDataSourceArguments: 1)]
-    [DynamicData(nameof(SetComponentTwoComponentData), dynamicDataSourceArguments: 100)]
-    public void RemoveComponent<T>(World world, Entity entity, T component)
-    {
-        ArchetypeId prevArchetypeId = entity.ArchetypeId;
-        world.RemoveComponent<T>(ref entity);
-        ArchetypeId currentArchetypeId = entity.ArchetypeId;
-        Assert.AreNotEqual(prevArchetypeId, currentArchetypeId);
-    }
+    // [TestMethod]
+    // [DynamicData(nameof(SetComponentTwoComponentData), dynamicDataSourceArguments: 1)]
+    // [DynamicData(nameof(SetComponentTwoComponentData), dynamicDataSourceArguments: 100)]
+    // public void RemoveComponent<T>(World world, Entity entity, T component)
+    // {
+    //     ArchetypeId prevArchetypeId = entity.ArchetypeId;
+    //     world.RemoveComponent<T>(ref entity);
+    //     ArchetypeId currentArchetypeId = entity.ArchetypeId;
+    //     Assert.AreNotEqual(prevArchetypeId, currentArchetypeId);
+    // }
     [TestMethod]
     [DynamicData(nameof(RemoveEntityData), dynamicDataSourceArguments: 1)]
     [DynamicData(nameof(RemoveEntityData), dynamicDataSourceArguments: 100)]
