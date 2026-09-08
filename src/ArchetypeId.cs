@@ -1,7 +1,7 @@
 namespace Vecs;
 public struct ArchetypeId : IEquatable<ArchetypeId>
 {
-    public int Id = 0;
+    private int Id = 0;
     private ArchetypeId(int id)
     {
         Id = id;
