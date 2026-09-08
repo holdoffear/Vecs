@@ -1,8 +1,7 @@
 namespace Vecs;
 public static class Component<T>
 {
-    public static readonly int Id = ComponentIdGenerator.NextId;
-    public static readonly int BitwiseId = 1 << Id;
-    public static readonly Type ComponentType = typeof(T);
-    public static ComponentId GetComponentId() => new(Id);
+    private static readonly int Id = ComponentIdGenerator.NextId;
+    private static readonly int BitwiseId = 1 << Id;
+    public static ComponentId GetComponentId() => new(BitwiseId);
 }
