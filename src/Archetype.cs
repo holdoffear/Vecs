@@ -1,7 +1,7 @@
 namespace Vecs;
 public struct Archetype : IEquatable<Archetype>
 {
-    public readonly ArchetypeId ArchetypeId = new(-1);
+    public readonly ArchetypeId ArchetypeId;
     public Entity[] Entities = [];
     public ComponentData[] Components = [];
     public int NextIndex = 0;
