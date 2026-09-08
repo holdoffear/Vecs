@@ -1,7 +1,7 @@
 namespace Vecs;
 public struct ArchetypeId : IEquatable<ArchetypeId>
 {
-    public int Id = -1;
+    public int Id = 0;
     private ArchetypeId(int id)
     {
         Id = id;
@@ -25,6 +25,7 @@ public struct ArchetypeId : IEquatable<ArchetypeId>
     public bool Equals(ArchetypeId other) => Id.Equals(other.Id);
     public static bool operator ==(ArchetypeId left, ArchetypeId right) => left.Equals(right);
     public static bool operator !=(ArchetypeId left, ArchetypeId right) => !left.Equals(right);
+    public static ArchetypeId operator &(ArchetypeId left, ArchetypeId right) => new(left.Id & right.Id);
     public static ArchetypeId operator |(ArchetypeId left, ComponentId right) => new(left.Id | right.Id);
     public static ArchetypeId operator |(ArchetypeId left, ArchetypeId right) => new(left.Id | right.Id);
     public override int GetHashCode() => Id.GetHashCode();
