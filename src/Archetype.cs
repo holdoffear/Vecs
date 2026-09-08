@@ -54,7 +54,7 @@ public struct Archetype : IEquatable<Archetype>
     public ref T Get<T>(Entity entity) => ref GetComponents<T>()[entity.Index];
     public T[] GetComponents<T>()
     {
-        ComponentId componentId = Component<T>.GetComponentId();;
+        ComponentId componentId = Component<T>.GetComponentId();
         if (GetComponents(componentId, out ComponentData componentData))
         {
             return componentData.GetComponents<T>();
