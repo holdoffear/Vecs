@@ -6,7 +6,7 @@
 
 Vecs is an Entity Component System written in C# that aims to be performant.
 - Makes use of Archetypes to handle grouping of entities that share the same set of components.
-- Uses a Query to access entity component data as a packed array.
+- Uses Queries to perform operations on entity components.
 - Component data is stored contiguously in memory making it cache friendly.
 - Components are of type struct.
 
@@ -15,7 +15,7 @@ Vecs is an Entity Component System written in C# that aims to be performant.
 using Vecs;
 
 World world = new World();
-Entity entity = world.CreateEntity(new Health(){Value = 100}, new Damage());
+Entity entity = world.CreateEntity(new Health(){Value = 100}, new Damage(5));
 Query query = world.CreateQuery();
 query.Foreach((ref Health health, ref Damage damage) =>
 {
@@ -61,7 +61,7 @@ struct Health
 }
 record struct Mana(int Value);
 ```
-Adding and removing Components to Entities can be done as follows:
+Adding Components to Entities and removing Components from Entities can be done as follows:
 ### Add
 ```c#
 world.AddComponent(entity, new Stamina(100));
@@ -87,6 +87,7 @@ query.Foreach((ref Health health, ref Mana mana) =>
     mana.Value = 0;
 });
 ```
+`Up to 8 components can be iterated at once.`
 ### Foreach
 
 The query iterates over the component types given as parameters.
