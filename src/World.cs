@@ -118,11 +118,10 @@ public partial class World
     }
     public void SetComponent<T>(in Entity entity, T component)
     {
-        if (!GetArchetype(entity.ArchetypeId, out ArchetypeBuffer archetypeBuffer))
+        if (GetArchetype(entity.ArchetypeId, out ArchetypeBuffer archetypeBuffer))
         {
-            throw new NotImplementedException();
+            archetypeBuffer.Archetype.Set(entity, component);
         }
-        archetypeBuffer.Archetype.Set(entity, component);
     }
     public void Shrink()
     {

@@ -99,8 +99,11 @@ public struct Archetype : IEquatable<Archetype>
     }
     public void Set<T>(in Entity entity, in T component)
     {
-        T[] components = GetComponents<T>();
-        components[entity.Index] = component;
+        if (GetComponents(Component<T>.GetComponentId(), out ComponentData componentData))
+        {
+            T[] components = componentData.GetComponents<T>();
+            components[entity.Index] = component;
+        }
     }
     public void Shrink() => Resize(NextIndex);
     public void Transfer(ref Entity entity, in Archetype otherArchetype)
