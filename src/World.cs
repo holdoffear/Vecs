@@ -116,7 +116,7 @@ public partial class World
         }
         archetypeBuffer.Archetype.Remove(entity);
     }
-    public void SetComponent<T>(in Entity entity, T component)
+    public void SetComponent<T>(in Entity entity, in T component)
     {
         if (GetArchetype(entity.ArchetypeId, out ArchetypeBuffer archetypeBuffer))
         {
