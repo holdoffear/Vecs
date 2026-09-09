@@ -78,7 +78,7 @@ Requesting entity components can be done through a query:
 Query query = world.CreateQuery();
 
 query.With<Stamina>(),
-    .With<Health, Mana>(),
+    .With<SpellCasting, >(),
     .Exclude<Dead>();
 
 query.Foreach((ref Health health, ref Mana mana) =>
@@ -90,10 +90,20 @@ query.Foreach((ref Health health, ref Mana mana) =>
 `Up to 8 components can be iterated at once.`
 ### Foreach
 
-The query iterates over the component types given as parameters.
+The query performs a user provided operation over the component parameter list.
+
+`(ref Health health, ref Mana mana)`
+
+`All entities that have the Health and Mana components.`
+
+`Only the Health and Mana components of the entities are iterated over.`
 
 ### With<>()
-The query fetches all matching Archetypes that CONTAIN ALL matching component types.
+The query fetches all matching Archetypes that CONTAIN ALL of the matching component types.
+
+`All entities that have the Stamina and SpellCasting components.`
 
 ### Exclude<>()
 The query fetches all matching Archetypes that DO NOT CONTAIN ANY of the matching component types;
+
+`Only entities that do not contain the Dead component.`
