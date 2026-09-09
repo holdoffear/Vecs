@@ -101,8 +101,7 @@ public struct Archetype : IEquatable<Archetype>
     {
         if (GetComponents(Component<T>.GetComponentId(), out ComponentData componentData))
         {
-            T[] components = componentData.GetComponents<T>();
-            components[entity.Index] = component;
+            componentData.SetComponent(entity.Index, component);
         }
     }
     public void Shrink() => Resize(NextIndex);

@@ -26,4 +26,9 @@ public struct ComponentData
         Components = array;
     }
     public void Set(int index, object? component) => Components.SetValue(component, index);
+    public void SetComponent<T>(int index, T component)
+    {
+        T[] components = GetComponents<T>();
+        components[index] = component;
+    }
 }
