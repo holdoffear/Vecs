@@ -1,25 +1,20 @@
 namespace Vecs;
-public struct Archetype
+public struct Archetype : IEquatable<Archetype>
 {
-    public readonly ArchetypeId ArchetypeId = new(-1);
+    public readonly ArchetypeId ArchetypeId;
     public Entity[] Entities = [];
     public ComponentData[] Components = [];
     public int NextIndex = 0;
     public Archetype(ArchetypeId archetypeId, int count, ComponentData[] components)
     {
+        count = count < 1 ? 1 : count;
         ArchetypeId = archetypeId;
         Entities = new Entity[count];
         Components = components;
     }
-    // public void Add(in Entity entity)
-    // {
-    //     Entities[NextIndex] = entity;
-    //     Entities[NextIndex].Index = NextIndex++;
-    // }
     public ref Entity AddEntity(ref Entity entity)
     {
-        entity.ArchetypeId = ArchetypeId;
-        entity.Index = NextIndex;
+        entity = new(entity.Id, ArchetypeId, NextIndex);
         Entities[NextIndex++] = entity;
         return ref entity;
     }
@@ -43,23 +38,34 @@ public struct Archetype
     }
     public ref Entity CreateEntity()
     {
-        Entities[NextIndex] = new(IdGenerator.NextId, ArchetypeId, NextIndex);
+        if (NextIndex < Entities.Length)
+        {
+            Entities[NextIndex] = new(IdGenerator.NextId, ArchetypeId, NextIndex);
+        }
+        else
+        {
+            Resize();
+            Entities[NextIndex] = new(IdGenerator.NextId, ArchetypeId, NextIndex);
+        }
         return ref Entities[NextIndex++];
     }
+    public override bool Equals(object? obj) => obj is Archetype archetype && Equals(archetype);
+    public bool Equals(Archetype other) => ArchetypeId == other.ArchetypeId;
     public ref T Get<T>(Entity entity) => ref GetComponents<T>()[entity.Index];
     public T[] GetComponents<T>()
     {
-        if (!GetComponents(Component<T>.Id, out ComponentData componentData))
+        ComponentId componentId = Component<T>.GetComponentId();
+        if (GetComponents(componentId, out ComponentData componentData))
         {
-            throw new NotImplementedException();
+            return componentData.GetComponents<T>();
         }
-        return componentData.GetComponents<T>();
+        return [];
     }
-    private bool GetComponents(int id, out ComponentData componentData)
+    private bool GetComponents(ComponentId componentId, out ComponentData componentData)
     {
         foreach (ComponentData component in Components)
         {
-            if (id == component.Id)
+            if (componentId == component.ComponentId)
             {
                 componentData = component;
                 return true;
@@ -69,6 +75,8 @@ public struct Archetype
         return false;
     }
     public Span<T> GetComponentsAsSpan<T>() => new(GetComponents<T>(), 0, NextIndex);
+    public Span<Entity> GetEntitiesAsSpan() => new(Entities, 0, NextIndex);
+    public override int GetHashCode() => ArchetypeId.GetHashCode();
     public void Remove(in Entity entity) => RemoveAt(entity.Index);
     private void RemoveAt(int index)
     {
@@ -80,16 +88,23 @@ public struct Archetype
         Entities[index] = Entities[lastIndex];
         NextIndex--;
     }
-    public void Set<T>(int index, in T component)
+    private void Resize() => Resize(Entities.Length*2);
+    private void Resize(int newSize)
     {
-        T[] components = GetComponents<T>();
-        components[index] = component;
+        Array.Resize(ref Entities, newSize);
+        for (int i = 0; i < Components.Length; i++)
+        {
+            Components[i].Resize(newSize);
+        }
     }
     public void Set<T>(in Entity entity, in T component)
     {
-        T[] components = GetComponents<T>();
-        components[entity.Index] = component;
+        if (GetComponents(Component<T>.GetComponentId(), out ComponentData componentData))
+        {
+            componentData.SetComponent(entity.Index, component);
+        }
     }
+    public void Shrink() => Resize(NextIndex);
     public void Transfer(ref Entity entity, in Archetype otherArchetype)
     {
         int currentIndex = entity.Index;
@@ -97,11 +112,13 @@ public struct Archetype
         int otherIndex = entity.Index;
         foreach (ComponentData component in Components)
         {
-            if (otherArchetype.GetComponents(component.Id, out ComponentData otherComponent))
+            if (otherArchetype.GetComponents(component.ComponentId, out ComponentData otherComponent))
             {
                 otherComponent.Set(otherIndex, component.Get(currentIndex));
             }
         }
         RemoveAt(currentIndex);
     }
+    public static bool operator ==(Archetype left, Archetype right) => left.Equals(right);
+    public static bool operator !=(Archetype left, Archetype right) => !left.Equals(right);
 }

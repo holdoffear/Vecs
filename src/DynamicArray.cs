@@ -1,8 +1,8 @@
-using System.Collections;
-public struct DynamicArray<T> : IEnumerable<T>
+public struct DynamicArray<T>
 where T : struct
 {
     private int NextIndex = 0;
+    private int Size = 0;
     private T[] Data;
     public int Length
     {
@@ -10,22 +10,50 @@ where T : struct
     }
     public DynamicArray(int count)
     {
+        count = count < 1 ? 1 : count;
         Data = new T[count];
+        Size = Data.Length;
     }
     public ref T this[int index]
     {
-        get => ref Data[index];
-    }
-    public void Add(T element) => Data[NextIndex++] = element;
-    public Span<T> AsSpan() => new(Data, 0, Length);
-    public IEnumerator<T> GetEnumerator()
-    {
-        foreach (T element in Data)
+        // get => ref Data[index];
+        get
         {
-            yield return element;
+            if ((uint)index < (uint)NextIndex)
+            {
+                return ref Data[index];
+            }
+            throw new IndexOutOfRangeException($"Index: {index}, Array Length: {Length}");
         }
     }
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    public void Add(T element)
+    {
+        if ((uint)NextIndex < (uint)Size)
+        {
+            Data[NextIndex++] = element;
+        }
+        else
+        {
+            Resize();
+            Data[NextIndex++] = element;
+        }
+    }
+    public Span<T> AsSpan() => new(Data, 0, Length);
+    // public bool Find<T1>(in T1 element, out T value) where T1 : IEqualityOperators<T1, T, bool> => Find(element, Data, out value);
+    // public static bool Find<T1>(in T1 element, T[] Data, out T value) where T1 : IEqualityOperators<T1, T, bool>
+    // {
+    //     for (int i = 0; i < Data.Length; i++)
+    //     {
+    //         ref T data = ref Data[i];
+    //         if (element == data)
+    //         {
+    //             value = data;
+    //             return true;
+    //         }
+    //     }
+    //     value = default;
+    //     return false;
+    // }
     public void Remove(int index)
     {
         if (NextIndex > 0)
@@ -33,4 +61,11 @@ where T : struct
             Data[index] = Data[--NextIndex];
         }
     }
+    private void Resize() => Resize(Size*2);
+    private void Resize(int newSize)
+    {
+        Size = newSize == 0 ? 1 : newSize;
+        Array.Resize(ref Data, Size);
+    }
+    public void Shrink() => Resize(NextIndex);
 }

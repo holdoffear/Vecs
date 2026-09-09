@@ -1,26 +1,34 @@
+using System.Collections;
+
 namespace Vecs;
 public struct ComponentData
 {
-    public int Id;
+    public ComponentId ComponentId;
     public Array Components;
-    public ComponentData(int id, Array array)
+    public ComponentData(ComponentId componentId, Array array)
     {
-        Id = id;
+        ComponentId = componentId;
         Components = array;
     }
     public ComponentData(ComponentData old, int count)
     {
         Type type = old.Components.GetType();
         Components = Array.CreateInstanceFromArrayType(type, count);
-        Id = old.Id;
+        ComponentId = old.ComponentId;
     }
-    // public object? this[int index]
-    // {
-    //     get => Components.GetValue(index);
-    //     set => Components.SetValue(value, index);
-    // }
     public T[] GetComponents<T>() => (T[])Components;
     public object? Get(int index) => Components.GetValue(index);
-    public void Set<T>(int index, ref T component) => GetComponents<T>()[index] = component;
+    public void Resize(int size)
+    {
+        Type type = Components.GetType();
+        Array array = Array.CreateInstanceFromArrayType(type, size);
+        Array.Copy(Components, array, Math.Min(array.Length, Components.Length));
+        Components = array;
+    }
     public void Set(int index, object? component) => Components.SetValue(component, index);
+    public void SetComponent<T>(int index, in T component)
+    {
+        T[] components = GetComponents<T>();
+        components[index] = component;
+    }
 }

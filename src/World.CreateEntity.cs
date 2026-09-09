@@ -3,22 +3,22 @@ public partial class World
 {
     public Entity CreateEntity<T1>(T1 componentA)
     {
-        ArchetypeId archetypeId = new(Component<T1>.BitwiseId);
+        ArchetypeId archetypeId = new(Component<T1>.GetComponentId());
         if (!GetArchetype(archetypeId, out ArchetypeBuffer archetypeBuffer))
         {
-            ComponentData[] components = [new (Component<T1>.Id, new T1[ArchetypeEntityCount])];
+            ComponentData[] components = [new (Component<T1>.GetComponentId(), new T1[ArchetypeEntityCount])];
             archetypeBuffer = new(ref CreateArchetype(archetypeId, components));
         }
         Entity entity = archetypeBuffer.Archetype.CreateEntity();
         archetypeBuffer.Archetype.Set(entity, componentA);
         return entity;
     }
-    public Entity CreateEntity<T1, T2, T3>(T1 componentA, T2 componentB)
+    public Entity CreateEntity<T1, T2>(T1 componentA, T2 componentB)
     {
-        ArchetypeId archetypeId = new(Component<T1>.BitwiseId | Component<T2>.BitwiseId);
+        ArchetypeId archetypeId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId());
         if (!GetArchetype(archetypeId, out ArchetypeBuffer archetypeBuffer))
         {
-            ComponentData[] components = [new (Component<T1>.Id, new T1[ArchetypeEntityCount]), new (Component<T2>.Id, new T2[ArchetypeEntityCount])];
+            ComponentData[] components = [new (Component<T1>.GetComponentId(), new T1[ArchetypeEntityCount]), new (Component<T2>.GetComponentId(), new T2[ArchetypeEntityCount])];
             archetypeBuffer = new(ref CreateArchetype(archetypeId, components));
         }
         Entity entity = archetypeBuffer.Archetype.CreateEntity();
@@ -27,10 +27,10 @@ public partial class World
     }
     public Entity CreateEntity<T1, T2, T3>(T1 componentA, T2 componentB, T3 componentC)
     {
-        ArchetypeId archetypeId = new(Component<T1>.BitwiseId | Component<T2>.BitwiseId | Component<T3>.BitwiseId);
+        ArchetypeId archetypeId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId(), Component<T3>.GetComponentId());
         if (!GetArchetype(archetypeId, out ArchetypeBuffer archetypeBuffer))
         {
-            ComponentData[] components = [new (Component<T1>.Id, new T1[ArchetypeEntityCount]), new (Component<T2>.Id, new T2[ArchetypeEntityCount]), new (Component<T3>.Id, new T3[ArchetypeEntityCount])];
+            ComponentData[] components = [new (Component<T1>.GetComponentId(), new T1[ArchetypeEntityCount]), new (Component<T2>.GetComponentId(), new T2[ArchetypeEntityCount]), new (Component<T3>.GetComponentId(), new T3[ArchetypeEntityCount])];
             archetypeBuffer = new(ref CreateArchetype(archetypeId, components));
         }
         Entity entity = archetypeBuffer.Archetype.CreateEntity();

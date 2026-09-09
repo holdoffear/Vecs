@@ -5,25 +5,105 @@
 ![showcase](docs/img/Showcase.gif)
 
 Vecs is an Entity Component System written in C# that aims to be performant.
-- Makes use of Archetypes to handle association of entities to components
-- Component data is stored contiguously in memory making it cache friendly
+- Makes use of Archetypes to handle grouping of entities that share the same set of components.
+- Uses Queries to perform operations on entity components.
+- Component data is stored contiguously in memory making it cache friendly.
+- Components are of type struct.
 
 # Example
-```csharp
+```c#
 using Vecs;
 
-World world = new World(10);
-Entity entity = world.CreateEntity(new Velocity(){Value = 0});
+World world = new World();
+Entity entity = world.CreateEntity(new Health(){Value = 100}, new Damage(5));
 Query query = world.CreateQuery();
-query.Get<Velocity>();
-query.Foreach<Velocity>((ref Velocity velocity) =>
+query.Foreach((ref Health health, ref Damage damage) =>
 {
-    velocity.Value = 1;
+    health.Value -= damage.Value;
 });
 
-
-struct Velocity
+struct Health
 {
     public float Value;
 }
+record struct Damage(float Value);
 ```
+# Entity
+
+An Entity is a unique identifier of type struct that is used to manage a set of components assigned to that Entity.
+
+Creating and removing an entity can be done as follows with varying component types:
+
+### Create
+```c#
+Entity entity = world.CreateEntity<int>(4);
+```
+```c#
+Entity entity = world.CreateEntity<Name, Position, Velocity>();
+```
+`An entity must have at least one component.`
+
+Supports up to 32 components. <T1, T2, ..., T32>
+
+### Remove
+
+```c#
+world.RemoveEntity(entity);
+```
+
+# Component
+
+A component is any `struct`.
+```c#
+struct Health
+{
+    public int Value;
+}
+record struct Mana(int Value);
+```
+Adding Components to Entities and removing Components from Entities can be done as follows:
+### Add
+```c#
+world.AddComponent(entity, new Stamina(100));
+```
+### Remove
+```c#
+world.RemoveComponent<Animation>(entity);
+```
+
+# Query
+
+Requesting entity components can be done through a query:
+```c#
+Query query = world.CreateQuery();
+
+query.With<Stamina>(),
+    .With<SpellCasting, >(),
+    .Exclude<Dead>();
+
+query.Foreach((ref Health health, ref Mana mana) =>
+{
+    health.Value += mana.Value;
+    mana.Value = 0;
+});
+```
+`Up to 8 components can be iterated at once.`
+### Foreach
+
+The query performs a user provided operation over the component parameter list.
+
+`(ref Health health, ref Mana mana)`
+
+`All entities that have the Health and Mana components.`
+
+`Only the Health and Mana components of the entities are iterated over.`
+
+### With<>()
+The query fetches all matching Archetypes that CONTAIN ALL of the matching component types.
+
+`All entities that have the Stamina and SpellCasting components.`
+
+### Exclude<>()
+The query fetches all matching Archetypes that DO NOT CONTAIN ANY of the matching component types;
+
+`Only entities that do not contain the Dead component.`
