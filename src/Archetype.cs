@@ -1,5 +1,5 @@
 namespace Vecs;
-public struct Archetype : IEquatable<Archetype>
+public record struct Archetype
 {
     public readonly ArchetypeId ArchetypeId;
     public Entity[] Entities = [];
@@ -49,8 +49,6 @@ public struct Archetype : IEquatable<Archetype>
         }
         return ref Entities[NextIndex++];
     }
-    public override bool Equals(object? obj) => obj is Archetype archetype && Equals(archetype);
-    public bool Equals(Archetype other) => ArchetypeId == other.ArchetypeId;
     public ref T Get<T>(Entity entity) => ref GetComponents<T>()[entity.Index];
     public T[] GetComponents<T>()
     {
@@ -119,6 +117,4 @@ public struct Archetype : IEquatable<Archetype>
         }
         RemoveAt(currentIndex);
     }
-    public static bool operator ==(Archetype left, Archetype right) => left.Equals(right);
-    public static bool operator !=(Archetype left, Archetype right) => !left.Equals(right);
 }
