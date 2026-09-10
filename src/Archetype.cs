@@ -1,5 +1,5 @@
 namespace Vecs;
-public struct Archetype : IEquatable<Archetype>
+public record struct Archetype
 {
     public readonly ArchetypeId ArchetypeId;
     public Entity[] Entities = [];
@@ -14,7 +14,7 @@ public struct Archetype : IEquatable<Archetype>
     }
     public ref Entity AddEntity(ref Entity entity)
     {
-        entity = new(entity.Id, ArchetypeId, NextIndex);
+        entity = new(entity.EntityId, ArchetypeId, NextIndex);
         Entities[NextIndex++] = entity;
         return ref entity;
     }
@@ -32,7 +32,7 @@ public struct Archetype : IEquatable<Archetype>
         int index = entity.Index;
         if (index < NextIndex)
         {
-            return Entities[index].Id == entity.Id;
+            return Entities[index] == entity;
         }
         return false;
     }
@@ -40,17 +40,15 @@ public struct Archetype : IEquatable<Archetype>
     {
         if (NextIndex < Entities.Length)
         {
-            Entities[NextIndex] = new(IdGenerator.NextId, ArchetypeId, NextIndex);
+            Entities[NextIndex] = new(IdGenerator.CreateEntityId(), ArchetypeId, NextIndex);
         }
         else
         {
             Resize();
-            Entities[NextIndex] = new(IdGenerator.NextId, ArchetypeId, NextIndex);
+            Entities[NextIndex] = new(IdGenerator.CreateEntityId(), ArchetypeId, NextIndex);
         }
         return ref Entities[NextIndex++];
     }
-    public override bool Equals(object? obj) => obj is Archetype archetype && Equals(archetype);
-    public bool Equals(Archetype other) => ArchetypeId == other.ArchetypeId;
     public ref T Get<T>(Entity entity) => ref GetComponents<T>()[entity.Index];
     public T[] GetComponents<T>()
     {
@@ -76,7 +74,6 @@ public struct Archetype : IEquatable<Archetype>
     }
     public Span<T> GetComponentsAsSpan<T>() => new(GetComponents<T>(), 0, NextIndex);
     public Span<Entity> GetEntitiesAsSpan() => new(Entities, 0, NextIndex);
-    public override int GetHashCode() => ArchetypeId.GetHashCode();
     public void Remove(in Entity entity) => RemoveAt(entity.Index);
     private void RemoveAt(int index)
     {
@@ -119,6 +116,4 @@ public struct Archetype : IEquatable<Archetype>
         }
         RemoveAt(currentIndex);
     }
-    public static bool operator ==(Archetype left, Archetype right) => left.Equals(right);
-    public static bool operator !=(Archetype left, Archetype right) => !left.Equals(right);
 }

@@ -1,12 +1,12 @@
 namespace Vecs;
-public struct Entity
+public readonly record struct Entity
 {
-    public int Id;
-    public ArchetypeId ArchetypeId;
-    public int Index = -1;
-    public Entity(int id, ArchetypeId archetypeId, int index)
+    public readonly EntityId EntityId;
+    public readonly ArchetypeId ArchetypeId;
+    public readonly int Index = -1;
+    internal Entity(EntityId entityId, ArchetypeId archetypeId, int index)
     {
-        Id = id;
+        EntityId = entityId;
         ArchetypeId = archetypeId;
         Index = index;
     }

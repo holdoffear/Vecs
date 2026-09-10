@@ -30,7 +30,7 @@ public class QueryTest
     public void CreateQueryOneComponent<T>(World world, Entity entity, T num)
     {
         Query query = world.CreateQuery();
-        query.Foreach((ref T component) =>
+        query.Process((ref T component) =>
         {
             component = num;
         });
@@ -43,7 +43,7 @@ public class QueryTest
     public void CreateQueryTwoComponents<T1, T2>(World world, Entity entity, T1 elementA, T2 elementB)
     {
         Query query = world.CreateQuery();
-        query.Foreach((ref T1 componentA, ref T2 componentB) =>
+        query.Process((ref T1 componentA, ref T2 componentB) =>
         {
             componentA = elementA;
             componentB = elementB;

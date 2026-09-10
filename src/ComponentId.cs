@@ -1,15 +1,10 @@
 namespace Vecs;
-public struct ComponentId : IEquatable<ComponentId>
+public readonly record struct ComponentId
 {
-    public int Id;
+    public readonly int Id;
     public ComponentId(int id)
     {
         Id = id;
     }
-    public override bool Equals(object? obj) => obj is ComponentId componentId && Equals(componentId);
-    public bool Equals(ComponentId other) => Id.Equals(other.Id);
-    public static bool operator ==(ComponentId left, ComponentId right) => left.Equals(right);
-    public static bool operator !=(ComponentId left, ComponentId right) => !left.Equals(right);
     public static ComponentId operator ~(ComponentId right) => new(~right.Id);
-    public override int GetHashCode() => Id.GetHashCode();
 }

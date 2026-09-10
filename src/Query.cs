@@ -4,7 +4,7 @@ public partial class Query
     private World World;
     private ArchetypeId WithId;
     private ArchetypeId ExcludeId;
-    public Query(World world)
+    internal Query(World world)
     {
         World = world;
     }
