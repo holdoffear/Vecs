@@ -17,7 +17,7 @@ using Vecs;
 World world = new World();
 Entity entity = world.CreateEntity(new Health(){Value = 100}, new Damage(5));
 Query query = world.CreateQuery();
-query.Foreach((ref Health health, ref Damage damage) =>
+query.Process((ref Health health, ref Damage damage) =>
 {
     health.Value -= damage.Value;
 });
@@ -81,14 +81,14 @@ query.With<Stamina>(),
     .With<SpellCasting, >(),
     .Exclude<Dead>();
 
-query.Foreach((ref Health health, ref Mana mana) =>
+query.Process((ref Health health, ref Mana mana) =>
 {
     health.Value += mana.Value;
     mana.Value = 0;
 });
 ```
 `Up to 8 components can be iterated at once.`
-### Foreach
+### Process
 
 The query performs a user provided operation over the component parameter list.
 
