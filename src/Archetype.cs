@@ -74,7 +74,6 @@ public record struct Archetype
     }
     public Span<T> GetComponentsAsSpan<T>() => new(GetComponents<T>(), 0, NextIndex);
     public Span<Entity> GetEntitiesAsSpan() => new(Entities, 0, NextIndex);
-    public override int GetHashCode() => ArchetypeId.GetHashCode();
     public void Remove(in Entity entity) => RemoveAt(entity.Index);
     private void RemoveAt(int index)
     {
