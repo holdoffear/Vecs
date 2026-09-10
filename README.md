@@ -78,7 +78,7 @@ Requesting entity components can be done through a query:
 Query query = world.CreateQuery();
 
 query.With<Stamina>(),
-    .With<SpellCasting, >(),
+    .With<SpellCasting>(),
     .Exclude<Dead>();
 
 query.Process((ref Health health, ref Mana mana) =>
