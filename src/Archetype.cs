@@ -14,7 +14,7 @@ public struct Archetype : IEquatable<Archetype>
     }
     public ref Entity AddEntity(ref Entity entity)
     {
-        entity = new(entity.Id, ArchetypeId, NextIndex);
+        entity = new(entity.EntityId, ArchetypeId, NextIndex);
         Entities[NextIndex++] = entity;
         return ref entity;
     }
@@ -32,7 +32,7 @@ public struct Archetype : IEquatable<Archetype>
         int index = entity.Index;
         if (index < NextIndex)
         {
-            return Entities[index].Id == entity.Id;
+            return Entities[index] == entity;
         }
         return false;
     }
@@ -40,12 +40,12 @@ public struct Archetype : IEquatable<Archetype>
     {
         if (NextIndex < Entities.Length)
         {
-            Entities[NextIndex] = new(IdGenerator.NextId, ArchetypeId, NextIndex);
+            Entities[NextIndex] = new(IdGenerator.CreateEntityId(), ArchetypeId, NextIndex);
         }
         else
         {
             Resize();
-            Entities[NextIndex] = new(IdGenerator.NextId, ArchetypeId, NextIndex);
+            Entities[NextIndex] = new(IdGenerator.CreateEntityId(), ArchetypeId, NextIndex);
         }
         return ref Entities[NextIndex++];
     }
