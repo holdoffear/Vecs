@@ -1,5 +1,3 @@
-using System.Collections;
-
 namespace Vecs;
 public struct ComponentData
 {
