@@ -7,4 +7,5 @@ public readonly record struct ComponentId
         Id = id;
     }
     public static ComponentId operator ~(ComponentId right) => new(~right.Id);
+    public static ComponentId operator |(ComponentId left, ComponentId right) => new(left.Id | right.Id);
 }
