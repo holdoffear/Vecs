@@ -16,7 +16,7 @@ public partial class Query
     }
 	public void Process<T1, T2>(Operation<T1, T2> operation)
     {
-        ArchetypeId GetId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId());
+        ArchetypeId GetId = new(Component<T1>.GetComponentId() | Component<T2>.GetComponentId());
         Archetype[] archetypes = GetArchetypes(GetId);
         foreach (Archetype archetype in archetypes)
         {
@@ -29,7 +29,7 @@ public partial class Query
     }
 	public void Process<T1, T2, T3>(Operation<T1, T2, T3> operation)
     {
-        ArchetypeId GetId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId(), Component<T3>.GetComponentId());
+        ArchetypeId GetId = new(Component<T1>.GetComponentId() | Component<T2>.GetComponentId() | Component<T3>.GetComponentId());
         Archetype[] archetypes = GetArchetypes(GetId);
         foreach (Archetype archetype in archetypes)
         {
@@ -42,7 +42,7 @@ public partial class Query
     }
 	public void Process<T1, T2, T3, T4>(Operation<T1, T2, T3, T4> operation)
     {
-        ArchetypeId GetId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId(), Component<T3>.GetComponentId(), Component<T4>.GetComponentId());
+        ArchetypeId GetId = new(Component<T1>.GetComponentId() | Component<T2>.GetComponentId() | Component<T3>.GetComponentId() | Component<T4>.GetComponentId());
         Archetype[] archetypes = GetArchetypes(GetId);
         foreach (Archetype archetype in archetypes)
         {
@@ -55,7 +55,7 @@ public partial class Query
     }
 	public void Process<T1, T2, T3, T4, T5>(Operation<T1, T2, T3, T4, T5> operation)
     {
-        ArchetypeId GetId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId(), Component<T3>.GetComponentId(), Component<T4>.GetComponentId(), Component<T5>.GetComponentId());
+        ArchetypeId GetId = new(Component<T1>.GetComponentId() | Component<T2>.GetComponentId() | Component<T3>.GetComponentId() | Component<T4>.GetComponentId() | Component<T5>.GetComponentId());
         Archetype[] archetypes = GetArchetypes(GetId);
         foreach (Archetype archetype in archetypes)
         {
@@ -68,7 +68,7 @@ public partial class Query
     }
 	public void Process<T1, T2, T3, T4, T5, T6>(Operation<T1, T2, T3, T4, T5, T6> operation)
     {
-        ArchetypeId GetId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId(), Component<T3>.GetComponentId(), Component<T4>.GetComponentId(), Component<T5>.GetComponentId(), Component<T6>.GetComponentId());
+        ArchetypeId GetId = new(Component<T1>.GetComponentId() | Component<T2>.GetComponentId() | Component<T3>.GetComponentId() | Component<T4>.GetComponentId() | Component<T5>.GetComponentId() | Component<T6>.GetComponentId());
         Archetype[] archetypes = GetArchetypes(GetId);
         foreach (Archetype archetype in archetypes)
         {
@@ -81,7 +81,7 @@ public partial class Query
     }
 	public void Process<T1, T2, T3, T4, T5, T6, T7>(Operation<T1, T2, T3, T4, T5, T6, T7> operation)
     {
-        ArchetypeId GetId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId(), Component<T3>.GetComponentId(), Component<T4>.GetComponentId(), Component<T5>.GetComponentId(), Component<T6>.GetComponentId(), Component<T7>.GetComponentId());
+        ArchetypeId GetId = new(Component<T1>.GetComponentId() | Component<T2>.GetComponentId() | Component<T3>.GetComponentId() | Component<T4>.GetComponentId() | Component<T5>.GetComponentId() | Component<T6>.GetComponentId() | Component<T7>.GetComponentId());
         Archetype[] archetypes = GetArchetypes(GetId);
         foreach (Archetype archetype in archetypes)
         {
@@ -94,7 +94,7 @@ public partial class Query
     }
 	public void Process<T1, T2, T3, T4, T5, T6, T7, T8>(Operation<T1, T2, T3, T4, T5, T6, T7, T8> operation)
     {
-        ArchetypeId GetId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId(), Component<T3>.GetComponentId(), Component<T4>.GetComponentId(), Component<T5>.GetComponentId(), Component<T6>.GetComponentId(), Component<T7>.GetComponentId(), Component<T8>.GetComponentId());
+        ArchetypeId GetId = new(Component<T1>.GetComponentId() | Component<T2>.GetComponentId() | Component<T3>.GetComponentId() | Component<T4>.GetComponentId() | Component<T5>.GetComponentId() | Component<T6>.GetComponentId() | Component<T7>.GetComponentId() | Component<T8>.GetComponentId());
         Archetype[] archetypes = GetArchetypes(GetId);
         foreach (Archetype archetype in archetypes)
         {
@@ -121,7 +121,7 @@ public partial class Query
     }
 	public void Process<T1, T2>(OperationWithEntity<T1, T2> operation)
     {
-        ArchetypeId GetId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId());
+        ArchetypeId GetId = new(Component<T1>.GetComponentId() | Component<T2>.GetComponentId());
         Archetype[] archetypes = GetArchetypes(GetId);
         foreach (Archetype archetype in archetypes)
         {
@@ -135,7 +135,7 @@ public partial class Query
     }
 	public void Process<T1, T2, T3>(OperationWithEntity<T1, T2, T3> operation)
     {
-        ArchetypeId GetId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId(), Component<T3>.GetComponentId());
+        ArchetypeId GetId = new(Component<T1>.GetComponentId() | Component<T2>.GetComponentId() | Component<T3>.GetComponentId());
         Archetype[] archetypes = GetArchetypes(GetId);
         foreach (Archetype archetype in archetypes)
         {
@@ -149,7 +149,7 @@ public partial class Query
     }
 	public void Process<T1, T2, T3, T4>(OperationWithEntity<T1, T2, T3, T4> operation)
     {
-        ArchetypeId GetId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId(), Component<T3>.GetComponentId(), Component<T4>.GetComponentId());
+        ArchetypeId GetId = new(Component<T1>.GetComponentId() | Component<T2>.GetComponentId() | Component<T3>.GetComponentId() | Component<T4>.GetComponentId());
         Archetype[] archetypes = GetArchetypes(GetId);
         foreach (Archetype archetype in archetypes)
         {
@@ -163,7 +163,7 @@ public partial class Query
     }
 	public void Process<T1, T2, T3, T4, T5>(OperationWithEntity<T1, T2, T3, T4, T5> operation)
     {
-        ArchetypeId GetId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId(), Component<T3>.GetComponentId(), Component<T4>.GetComponentId(), Component<T5>.GetComponentId());
+        ArchetypeId GetId = new(Component<T1>.GetComponentId() | Component<T2>.GetComponentId() | Component<T3>.GetComponentId() | Component<T4>.GetComponentId() | Component<T5>.GetComponentId());
         Archetype[] archetypes = GetArchetypes(GetId);
         foreach (Archetype archetype in archetypes)
         {
@@ -177,7 +177,7 @@ public partial class Query
     }
 	public void Process<T1, T2, T3, T4, T5, T6>(OperationWithEntity<T1, T2, T3, T4, T5, T6> operation)
     {
-        ArchetypeId GetId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId(), Component<T3>.GetComponentId(), Component<T4>.GetComponentId(), Component<T5>.GetComponentId(), Component<T6>.GetComponentId());
+        ArchetypeId GetId = new(Component<T1>.GetComponentId() | Component<T2>.GetComponentId() | Component<T3>.GetComponentId() | Component<T4>.GetComponentId() | Component<T5>.GetComponentId() | Component<T6>.GetComponentId());
         Archetype[] archetypes = GetArchetypes(GetId);
         foreach (Archetype archetype in archetypes)
         {
@@ -191,7 +191,7 @@ public partial class Query
     }
 	public void Process<T1, T2, T3, T4, T5, T6, T7>(OperationWithEntity<T1, T2, T3, T4, T5, T6, T7> operation)
     {
-        ArchetypeId GetId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId(), Component<T3>.GetComponentId(), Component<T4>.GetComponentId(), Component<T5>.GetComponentId(), Component<T6>.GetComponentId(), Component<T7>.GetComponentId());
+        ArchetypeId GetId = new(Component<T1>.GetComponentId() | Component<T2>.GetComponentId() | Component<T3>.GetComponentId() | Component<T4>.GetComponentId() | Component<T5>.GetComponentId() | Component<T6>.GetComponentId() | Component<T7>.GetComponentId());
         Archetype[] archetypes = GetArchetypes(GetId);
         foreach (Archetype archetype in archetypes)
         {
@@ -205,7 +205,7 @@ public partial class Query
     }
 	public void Process<T1, T2, T3, T4, T5, T6, T7, T8>(OperationWithEntity<T1, T2, T3, T4, T5, T6, T7, T8> operation)
     {
-        ArchetypeId GetId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId(), Component<T3>.GetComponentId(), Component<T4>.GetComponentId(), Component<T5>.GetComponentId(), Component<T6>.GetComponentId(), Component<T7>.GetComponentId(), Component<T8>.GetComponentId());
+        ArchetypeId GetId = new(Component<T1>.GetComponentId() | Component<T2>.GetComponentId() | Component<T3>.GetComponentId() | Component<T4>.GetComponentId() | Component<T5>.GetComponentId() | Component<T6>.GetComponentId() | Component<T7>.GetComponentId() | Component<T8>.GetComponentId());
         Archetype[] archetypes = GetArchetypes(GetId);
         foreach (Archetype archetype in archetypes)
         {
@@ -232,7 +232,7 @@ public partial class Query
     }
 	public void Process<T1, T2>(OperationWithOnlyEntity<T1, T2> operation)
     {
-        ArchetypeId GetId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId());
+        ArchetypeId GetId = new(Component<T1>.GetComponentId() | Component<T2>.GetComponentId());
         Archetype[] archetypes = GetArchetypes(GetId);
         foreach (Archetype archetype in archetypes)
         {
@@ -245,7 +245,7 @@ public partial class Query
     }
 	public void Process<T1, T2, T3>(OperationWithOnlyEntity<T1, T2, T3> operation)
     {
-        ArchetypeId GetId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId(), Component<T3>.GetComponentId());
+        ArchetypeId GetId = new(Component<T1>.GetComponentId() | Component<T2>.GetComponentId() | Component<T3>.GetComponentId());
         Archetype[] archetypes = GetArchetypes(GetId);
         foreach (Archetype archetype in archetypes)
         {
@@ -258,7 +258,7 @@ public partial class Query
     }
 	public void Process<T1, T2, T3, T4>(OperationWithOnlyEntity<T1, T2, T3, T4> operation)
     {
-        ArchetypeId GetId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId(), Component<T3>.GetComponentId(), Component<T4>.GetComponentId());
+        ArchetypeId GetId = new(Component<T1>.GetComponentId() | Component<T2>.GetComponentId() | Component<T3>.GetComponentId() | Component<T4>.GetComponentId());
         Archetype[] archetypes = GetArchetypes(GetId);
         foreach (Archetype archetype in archetypes)
         {
@@ -271,7 +271,7 @@ public partial class Query
     }
 	public void Process<T1, T2, T3, T4, T5>(OperationWithOnlyEntity<T1, T2, T3, T4, T5> operation)
     {
-        ArchetypeId GetId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId(), Component<T3>.GetComponentId(), Component<T4>.GetComponentId(), Component<T5>.GetComponentId());
+        ArchetypeId GetId = new(Component<T1>.GetComponentId() | Component<T2>.GetComponentId() | Component<T3>.GetComponentId() | Component<T4>.GetComponentId() | Component<T5>.GetComponentId());
         Archetype[] archetypes = GetArchetypes(GetId);
         foreach (Archetype archetype in archetypes)
         {
@@ -284,7 +284,7 @@ public partial class Query
     }
 	public void Process<T1, T2, T3, T4, T5, T6>(OperationWithOnlyEntity<T1, T2, T3, T4, T5, T6> operation)
     {
-        ArchetypeId GetId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId(), Component<T3>.GetComponentId(), Component<T4>.GetComponentId(), Component<T5>.GetComponentId(), Component<T6>.GetComponentId());
+        ArchetypeId GetId = new(Component<T1>.GetComponentId() | Component<T2>.GetComponentId() | Component<T3>.GetComponentId() | Component<T4>.GetComponentId() | Component<T5>.GetComponentId() | Component<T6>.GetComponentId());
         Archetype[] archetypes = GetArchetypes(GetId);
         foreach (Archetype archetype in archetypes)
         {
@@ -297,7 +297,7 @@ public partial class Query
     }
 	public void Process<T1, T2, T3, T4, T5, T6, T7>(OperationWithOnlyEntity<T1, T2, T3, T4, T5, T6, T7> operation)
     {
-        ArchetypeId GetId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId(), Component<T3>.GetComponentId(), Component<T4>.GetComponentId(), Component<T5>.GetComponentId(), Component<T6>.GetComponentId(), Component<T7>.GetComponentId());
+        ArchetypeId GetId = new(Component<T1>.GetComponentId() | Component<T2>.GetComponentId() | Component<T3>.GetComponentId() | Component<T4>.GetComponentId() | Component<T5>.GetComponentId() | Component<T6>.GetComponentId() | Component<T7>.GetComponentId());
         Archetype[] archetypes = GetArchetypes(GetId);
         foreach (Archetype archetype in archetypes)
         {
@@ -310,7 +310,7 @@ public partial class Query
     }
 	public void Process<T1, T2, T3, T4, T5, T6, T7, T8>(OperationWithOnlyEntity<T1, T2, T3, T4, T5, T6, T7, T8> operation)
     {
-        ArchetypeId GetId = new(Component<T1>.GetComponentId(), Component<T2>.GetComponentId(), Component<T3>.GetComponentId(), Component<T4>.GetComponentId(), Component<T5>.GetComponentId(), Component<T6>.GetComponentId(), Component<T7>.GetComponentId(), Component<T8>.GetComponentId());
+        ArchetypeId GetId = new(Component<T1>.GetComponentId() | Component<T2>.GetComponentId() | Component<T3>.GetComponentId() | Component<T4>.GetComponentId() | Component<T5>.GetComponentId() | Component<T6>.GetComponentId() | Component<T7>.GetComponentId() | Component<T8>.GetComponentId());
         Archetype[] archetypes = GetArchetypes(GetId);
         foreach (Archetype archetype in archetypes)
         {

@@ -16,7 +16,7 @@ public partial class Query
     }
     public Query Exclude<T1, T2>()
     {
-        ExcludeId |= new ArchetypeId(Component<T1>.GetComponentId(), Component<T2>.GetComponentId());
+        ExcludeId |= new ArchetypeId(Component<T1>.GetComponentId() | Component<T2>.GetComponentId());
         return this;
     }
     public Query With<T1>()
@@ -26,7 +26,7 @@ public partial class Query
     }
     public Query With<T1, T2>()
     {
-        WithId |= new ArchetypeId(Component<T1>.GetComponentId(), Component<T2>.GetComponentId());
+        WithId |= new ArchetypeId(Component<T1>.GetComponentId() | Component<T2>.GetComponentId());
         return this;
     }
 }
