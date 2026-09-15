@@ -10,13 +10,6 @@ public readonly record struct ArchetypeId
     {
         Id = componentId.Id;
     }
-    public ArchetypeId(params ComponentId[] componentIds)
-    {
-        foreach (ComponentId componentId in componentIds)
-        {
-            Id |= componentId.Id;
-        }
-    }
     public static ArchetypeId operator &(ArchetypeId left, ArchetypeId right) => new(left.Id & right.Id);
     public static ArchetypeId operator &(ArchetypeId left, ComponentId right) => new(left.Id & right.Id);
     public static ArchetypeId operator |(ArchetypeId left, ComponentId right) => new(left.Id | right.Id);

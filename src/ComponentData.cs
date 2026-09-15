@@ -1,34 +1,29 @@
-using System.Collections;
-
 namespace Vecs;
 public struct ComponentData
 {
     public ComponentId ComponentId;
     public Array Components;
-    public ComponentData(ComponentId componentId, Array array)
+    public delegate Array CreateArray(int count);
+    public delegate Array ResizeArray(Array array, int size);
+    public delegate void TransferComponent(Array source, int sourceIndex, Array target, int targetIndex);
+    public CreateArray CreateArrayOperation;
+    public ResizeArray ResizeArrayOperation;
+    public TransferComponent TransferComponentOperation;
+    public ComponentData(ComponentId componentId, Array array, CreateArray createArray, ResizeArray resizeArray, TransferComponent transferArray)
     {
         ComponentId = componentId;
         Components = array;
+        CreateArrayOperation = createArray;
+        ResizeArrayOperation = resizeArray;
+        TransferComponentOperation = transferArray;
     }
-    public ComponentData(ComponentData old, int count)
-    {
-        Type type = old.Components.GetType();
-        Components = Array.CreateInstanceFromArrayType(type, count);
-        ComponentId = old.ComponentId;
-    }
+    public ComponentData(ComponentData old, int newSize) : this(old.ComponentId, old.CreateArrayOperation(newSize), old.CreateArrayOperation, old.ResizeArrayOperation, old.TransferComponentOperation){}
     public T[] GetComponents<T>() => (T[])Components;
-    public object? Get(int index) => Components.GetValue(index);
-    public void Resize(int size)
-    {
-        Type type = Components.GetType();
-        Array array = Array.CreateInstanceFromArrayType(type, size);
-        Array.Copy(Components, array, Math.Min(array.Length, Components.Length));
-        Components = array;
-    }
-    public void Set(int index, object? component) => Components.SetValue(component, index);
+    public void Resize(int size) => Components = ResizeArrayOperation(Components, size);
     public void SetComponent<T>(int index, in T component)
     {
         T[] components = GetComponents<T>();
         components[index] = component;
     }
+    public void Transfer(in ComponentData old, int sourceIndex, int targetIndex) => TransferComponentOperation(old.Components, sourceIndex, Components, targetIndex);
 }
