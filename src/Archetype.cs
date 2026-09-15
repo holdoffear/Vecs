@@ -111,7 +111,7 @@ public record struct Archetype
         {
             if (otherArchetype.GetComponents(component.ComponentId, out ComponentData otherComponent))
             {
-                otherComponent.Set(otherIndex, component.Get(currentIndex));
+                otherComponent.Transfer(component, currentIndex, otherIndex);
             }
         }
         RemoveAt(currentIndex);
