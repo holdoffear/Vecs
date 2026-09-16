@@ -1,4 +1,4 @@
-public struct DynamicArray<T>
+internal struct DynamicArray<T>
 where T : struct
 {
     private int NextIndex = 0;
