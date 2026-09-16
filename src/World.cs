@@ -40,12 +40,11 @@ public partial class World
     public Query CreateQuery() => new(this);
     private bool GetArchetype(in ArchetypeId archetypeId, out ArchetypeBuffer archetypeBuffer)
     {
-        Span<Archetype> archetypes = Archetypes.AsSpan();
-        for (int i = 0; i < archetypes.Length; i++)
+        for (int i = 0; i < Archetypes.Length; i++)
         {
-            if (archetypeId == archetypes[i].ArchetypeId)
+            if (archetypeId == Archetypes[i].ArchetypeId)
             {
-                archetypeBuffer.Archetype = ref archetypes[i];
+                archetypeBuffer.Archetype = ref Archetypes[i];
                 return true;
             }
         }
@@ -55,10 +54,9 @@ public partial class World
     public Archetype[] GetArchetypes(ArchetypeId getId, ArchetypeId excludeId)
     {
         List<Archetype> archetypes = [];
-        Span<Archetype> archetypesSpan = Archetypes.AsSpan();
-        for (int i = 0; i < archetypesSpan.Length; i++)
+        for (int i = 0; i < Archetypes.Length; i++)
         {
-            ref Archetype archetype = ref archetypesSpan[i];
+            ref Archetype archetype = ref Archetypes[i];
             if ((archetype.ArchetypeId & getId) == getId && (archetype.ArchetypeId & excludeId) == new ArchetypeId(new ComponentId(0)))
             {
                 archetypes.Add(archetype);
@@ -124,10 +122,9 @@ public partial class World
     }
     public void Shrink()
     {
-        Span<Archetype> archetypes = Archetypes.AsSpan();
-        for (int i = 0; i < archetypes.Length; i++)
+        for (int i = 0; i < Archetypes.Length; i++)
         {
-            archetypes[i].Shrink();
+            Archetypes[i].Shrink();
         }
     }
     private void Transfer<T>(ref Entity entity, in T component, in Archetype oldArchetype, in Archetype newArchetype)
