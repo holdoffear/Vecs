@@ -16,15 +16,15 @@ where T : struct
     }
     public ref T this[int index]
     {
-        // get => ref Data[index];
-        get
-        {
-            if ((uint)index < (uint)NextIndex)
-            {
-                return ref Data[index];
-            }
-            throw new IndexOutOfRangeException($"Index: {index}, Array Length: {Length}");
-        }
+        get => ref Data[index];
+        // get
+        // {
+        //     if ((uint)index < (uint)NextIndex)
+        //     {
+        //         return ref Data[index];
+        //     }
+        //     throw new IndexOutOfRangeException($"Index: {index}, Array Length: {Length}");
+        // }
     }
     public void Add(T element)
     {
