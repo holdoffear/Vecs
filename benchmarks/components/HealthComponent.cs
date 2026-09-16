@@ -1,4 +1,1 @@
-public struct HealthComponent
-{
-    public int Health;
-}
+public record struct HealthComponent(int Value);

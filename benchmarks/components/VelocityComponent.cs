@@ -1,4 +1,1 @@
-public struct VelocityComponent
-{
-    public float Velocity;
-}
+public record struct VelocityComponent(float Value);

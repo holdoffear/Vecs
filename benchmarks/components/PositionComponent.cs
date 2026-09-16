@@ -1,5 +1,1 @@
-public struct PositionComponent
-{
-    public float X;
-    public float Y;
-}
+public record struct PositionComponent(float X, float Y);

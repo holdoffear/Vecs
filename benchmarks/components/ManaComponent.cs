@@ -1,0 +1,1 @@
+public record struct ManaComponent(float Value);
