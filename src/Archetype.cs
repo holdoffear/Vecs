@@ -12,12 +12,6 @@ public record struct Archetype
         Entities = new Entity[count];
         Components = components;
     }
-    public ref Entity AddEntity(ref Entity entity)
-    {
-        entity = new(entity.EntityId, ArchetypeId, NextIndex);
-        Entities[NextIndex++] = entity;
-        return ref entity;
-    }
     public ComponentData[] CloneComponents(int count)
     {
         ComponentData[] newComponents = new ComponentData[Components.Length];
@@ -46,6 +40,21 @@ public record struct Archetype
         {
             Resize();
             Entities[NextIndex] = new(IdGenerator.CreateEntityId(), ArchetypeId, NextIndex);
+        }
+        return ref Entities[NextIndex++];
+    }
+    private ref Entity CreateEntity(ref Entity entity)
+    {
+        if (NextIndex < Entities.Length)
+        {
+            Entities[NextIndex] = new(entity.EntityId, ArchetypeId, NextIndex);
+            entity = Entities[NextIndex];
+        }
+        else
+        {
+            Resize();
+            Entities[NextIndex] = new(entity.EntityId, ArchetypeId, NextIndex);
+            entity = Entities[NextIndex];
         }
         return ref Entities[NextIndex++];
     }
@@ -80,7 +89,7 @@ public record struct Archetype
         int lastIndex = NextIndex == 0 ? 0 : NextIndex-1;
         foreach (ComponentData componentData in Components)
         {
-            Array.Copy(componentData.Components, lastIndex, componentData.Components, index, 1);
+            componentData.Transfer(componentData, lastIndex, index);
         }
         Entities[index] = Entities[lastIndex];
         NextIndex--;
@@ -105,7 +114,7 @@ public record struct Archetype
     public void Transfer(ref Entity entity, in Archetype otherArchetype)
     {
         int currentIndex = entity.Index;
-        otherArchetype.AddEntity(ref entity);
+        otherArchetype.CreateEntity(ref entity);
         int otherIndex = entity.Index;
         foreach (ComponentData component in Components)
         {
